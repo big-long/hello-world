@@ -79,9 +79,9 @@
 		<ul>
 			<li><a href="<%=basePath%>regist/list" target="right"><span
 					class="icon-caret-right"></span>产品登记</a></li>
-			<li><a href="javascript:void(0)" target="right"><span
+			<li><a href="<%=basePath%>picklist/list" target="right"><span
 					class="icon-caret-right"></span>领料管理</a></li>
-			<li><a href="javascript:void(0)" target="right"><span
+			<li><a href="<%=basePath%>plan/list" target="right"><span
 					class="icon-caret-right"></span>计划管理</a></li>
 
 		</ul>

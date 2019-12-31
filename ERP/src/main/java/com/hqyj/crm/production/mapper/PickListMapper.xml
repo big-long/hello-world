@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hqyj.crm.production.dao.PickListMapper">
+	
+	<sql id="base_info">
+		pl_id,goods_name,pick_number,picking_date,purpose,pl_man,pl_position,operator,remark,status
+	</sql>
+	<select id="selectPicklistByKeyWord" parameterType="java.lang.String" resultType="com.hqyj.crm.production.entity.PickList">
+	select
+	<include refid="base_info" />
+	from picking_list where goods_name like #{keyWord}
+	</select>
+	
+	<delete id="deleteManyPL" parameterType="java.lang.String">
+		delete from picking_list where pl_id in
+		<foreach collection="array" item="plId" open="(" close=")"
+			separator=",">
+			#{plId}
+		</foreach>
+	</delete>
+	<delete id="deleteByPlId" parameterType="java.lang.String">
+		delete from picking_list
+		where pl_id=#{plId}
+	</delete>
+	<update id="updateSelective"
+		parameterType="com.hqyj.crm.production.entity.PickList">
+		update picking_list
+		<set>
+			<if test="goodsName != null">
+				goods_name=#{goodsName},
+			</if>
+			<if test="pickNumber != null">
+				pick_number=#{pickNumber},
+			</if>
+			<if test="pickingDate != null">
+				picking_date=#{pickingDate},
+			</if>
+			<if test="purpose != null">
+				purpose=#{purpose},
+			</if>
+			<if test="plMan != null">
+				pl_man=#{plMan},
+			</if>
+			<if test="plPosition != null">
+				pl_position=#{plPosition},
+			</if>
+			<if test="operator != null">
+				operator=#{operator},
+			</if>
+			<if test="remark != null">
+				remark=#{remark},
+			</if>
+			<if test="status != null">
+				status=#{status},
+			</if>
+		</set>
+		where pl_id=#{plId}
+	</update>
+	<select id="selectPicklistByPlId"
+		parameterType="java.lang.String" resultType="com.hqyj.crm.production.entity.PickList">
+		select
+		<include refid="base_info" />
+		from picking_list where pl_id=#{plId}
+	</select>
+	<select id="selectAllPickList"
+		resultType="com.hqyj.crm.production.entity.PickList">
+		select
+		<include refid="base_info" />
+		from picking_list
+
+	</select>
+	<insert id="insertSelective"
+		parameterType="com.hqyj.crm.production.entity.PickList">
+		insert into picking_list
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="plId != null">
+				pl_id,
+			</if>
+			<if test="goodsName != null">
+				goods_name,
+			</if>
+			<if test="pickNumber != null">
+				pick_number,
+			</if>
+			<if test="pickingDate != null">
+				picking_date,
+			</if>
+			<if test="purpose != null">
+				purpose,
+			</if>
+			<if test="plMan != null">
+				pl_man,
+			</if>
+			<if test="plPosition != null">
+				pl_position,
+			</if>
+			<if test="operator != null">
+				operator,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="plId != null">
+				#{plId,jdbcType=VARCHAR},
+			</if>
+			<if test="goodsName != null">
+				#{goodsName,jdbcType=VARCHAR},
+			</if>
+			<if test="pickNumber != null">
+				#{pickNumber,jdbcType=INTEGER},
+			</if>
+			<if test="pickingDate != null">
+				#{pickingDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="purpose != null">
+				#{purpose,jdbcType=VARCHAR},
+			</if>
+			<if test="plMan != null">
+				#{plMan,jdbcType=VARCHAR},
+			</if>
+			<if test="plPosition != null">
+				#{plPosition,jdbcType=VARCHAR},
+			</if>
+			<if test="operator != null">
+				#{operator,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+</mapper>

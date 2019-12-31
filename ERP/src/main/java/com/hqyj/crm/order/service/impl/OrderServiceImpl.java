@@ -1,8 +1,6 @@
 package com.hqyj.crm.order.service.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,13 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.hqyj.crm.baseinfo.dao.ClientMapper;
+import com.hqyj.crm.baseinfo.dao.ProductMapper;
+import com.hqyj.crm.baseinfo.entity.Client;
+import com.hqyj.crm.baseinfo.entity.Product;
 import com.hqyj.crm.order.dao.OrderMapper;
 import com.hqyj.crm.order.entity.Order;
 import com.hqyj.crm.order.service.OrderService;
-import com.hqyj.crm.production.dao.ClientMapper;
-import com.hqyj.crm.production.dao.ProductMapper;
-import com.hqyj.crm.production.entity.Client;
-import com.hqyj.crm.production.entity.Product;
 
 /**
  * @author zhaoPeng

@@ -8,10 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.hqyj.crm.production.entity.Client;
-import com.hqyj.crm.production.entity.Product;
-import com.hqyj.crm.production.service.ClientService;
-import com.hqyj.crm.production.service.ProductService;
+import com.hqyj.crm.baseinfo.entity.Client;
+import com.hqyj.crm.baseinfo.entity.Product;
+import com.hqyj.crm.baseinfo.service.ClientService;
+import com.hqyj.crm.baseinfo.service.ProductService;
 
 @Controller
 public class TestController {

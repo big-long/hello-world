@@ -16,7 +16,7 @@ public class ResolveException implements HandlerExceptionResolver {
 			System.err.println("没有权限");
 			return new ModelAndView("common/noPermission");
 		}else {
-			return new ModelAndView("error");
+			return new ModelAndView("common/error");
 		}
 	}
 

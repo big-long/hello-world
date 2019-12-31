@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hqyj.crm.production.dao.PlanMapper">
+	<resultMap id="BaseResultMap"
+		type="com.hqyj.crm.production.entity.Plan">
+		<id column="plan_id" jdbcType="VARCHAR" property="planId" />
+		<result column="product_name" jdbcType="VARCHAR"
+			property="productName" />
+		<result column="plan_number" jdbcType="INTEGER"
+			property="planNumber" />
+		<result column="plan_date" jdbcType="TIMESTAMP"
+			property="planDate" />
+		<result column="real_number" jdbcType="INTEGER"
+			property="realNumber" />
+		<result column="plan_finish_date" jdbcType="TIMESTAMP"
+			property="planFinishDate" />
+		<result column="handler_name" jdbcType="VARCHAR"
+			property="handlerName" />
+		<result column="operator" jdbcType="VARCHAR"
+			property="operator" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+		<result column="status" jdbcType="VARCHAR" property="status" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		plan_id, product_name, plan_number, plan_date, real_number, plan_finish_date,
+		handler_name,
+		operator, remark, status
+	</sql>
+	
+	<select id="selectPlanByKeyWord" parameterType="java.lang.String" resultType="com.hqyj.crm.production.entity.Plan">
+	select <include refid="Base_Column_List"/> from plan where product_name like #{keyWord}
+	
+	</select>
+	<delete id="deleteManyPlan" parameterType="java.lang.String">
+		delete from plan where plan_id in
+		<foreach collection="array" item="planId" open="(" close=")"
+			separator=",">
+			#{planId}
+		</foreach>
+	</delete>
+	<select id="selectAllPlan"
+		resultType="com.hqyj.crm.production.entity.Plan">
+		select
+		<include refid="Base_Column_List" />
+		from plan
+	</select>
+	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from plan
+		where plan_id = #{planId,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from plan
+		where plan_id = #{planId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert"
+		parameterType="com.hqyj.crm.production.entity.Plan">
+		insert into plan (plan_id, product_name, plan_number,
+		plan_date, real_number, plan_finish_date,
+		handler_name, operator, remark,
+		status)
+		values (#{planId,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR},
+		#{planNumber,jdbcType=INTEGER},
+		#{planDate,jdbcType=TIMESTAMP}, #{realNumber,jdbcType=INTEGER}, #{planFinishDate,jdbcType=TIMESTAMP},
+		#{handlerName,jdbcType=VARCHAR}, #{operator,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR},
+		#{status,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.hqyj.crm.production.entity.Plan">
+		insert into plan
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="planId != null">
+				plan_id,
+			</if>
+			<if test="productName != null">
+				product_name,
+			</if>
+			<if test="planNumber != null">
+				plan_number,
+			</if>
+			<if test="planDate != null">
+				plan_date,
+			</if>
+			<if test="realNumber != null">
+				real_number,
+			</if>
+			<if test="planFinishDate != null">
+				plan_finish_date,
+			</if>
+			<if test="handlerName != null">
+				handler_name,
+			</if>
+			<if test="operator != null">
+				operator,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="planId != null">
+				#{planId,jdbcType=VARCHAR},
+			</if>
+			<if test="productName != null">
+				#{productName,jdbcType=VARCHAR},
+			</if>
+			<if test="planNumber != null">
+				#{planNumber,jdbcType=INTEGER},
+			</if>
+			<if test="planDate != null">
+				#{planDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="realNumber != null">
+				#{realNumber,jdbcType=INTEGER},
+			</if>
+			<if test="planFinishDate != null">
+				#{planFinishDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="handlerName != null">
+				#{handlerName,jdbcType=VARCHAR},
+			</if>
+			<if test="operator != null">
+				#{operator,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.hqyj.crm.production.entity.Plan">
+		update plan
+		<set>
+			<if test="productName != null">
+				product_name = #{productName,jdbcType=VARCHAR},
+			</if>
+			<if test="planNumber != null">
+				plan_number = #{planNumber,jdbcType=INTEGER},
+			</if>
+			<if test="planDate != null">
+				plan_date = #{planDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="realNumber != null">
+				real_number = #{realNumber,jdbcType=INTEGER},
+			</if>
+			<if test="planFinishDate != null">
+				plan_finish_date = #{planFinishDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="handlerName != null">
+				handler_name = #{handlerName,jdbcType=VARCHAR},
+			</if>
+			<if test="operator != null">
+				operator = #{operator,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where plan_id = #{planId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.hqyj.crm.production.entity.Plan">
+		update plan
+		set product_name = #{productName,jdbcType=VARCHAR},
+		plan_number = #{planNumber,jdbcType=INTEGER},
+		plan_date = #{planDate,jdbcType=TIMESTAMP},
+		real_number = #{realNumber,jdbcType=INTEGER},
+		plan_finish_date = #{planFinishDate,jdbcType=TIMESTAMP},
+		handler_name = #{handlerName,jdbcType=VARCHAR},
+		operator = #{operator,jdbcType=VARCHAR},
+		remark = #{remark,jdbcType=VARCHAR},
+		status = #{status,jdbcType=VARCHAR}
+		where plan_id = #{planId,jdbcType=VARCHAR}
+	</update>
+</mapper>
