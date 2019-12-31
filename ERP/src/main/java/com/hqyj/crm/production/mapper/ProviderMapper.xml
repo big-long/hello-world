@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hqyj.crm.production.dao.ProviderMapper">
+	<!-- providerForShort;phone;linkman;email; depositBank; -->
+	<sql id="provider_total">
+		provider_id,
+		providerForShort,phone,linkman,email,depositBank,provider_name,
+		address, postalcode, linkman_phone, facsimile,
+		account,
+		credibility,
+		remark
+	</sql>
+	<sql id="provider_info">
+		provider_id, provider_name, address, postalcode,
+		linkman_phone, facsimile,
+		account,
+		credibility, remark
+	</sql>
+	<sql id="provider">
+		provider_id,provider_for_short,phone,linkman,email,deposit_bank
+	</sql>
+	
+	<select id="selectProviderByProviderName" parameterType="java.lang.String" resultType="com.hqyj.crm.production.entity.Provider">
+	select <include refid="provider_info"/> from provider_info where provider_name=#{providerName}
+	</select>
+	
+	<select id="selectAllProviderName" resultType="java.lang.String">
+	select provider_name from provider_info
+	</select>
+	<select id="selectAllInfo" parameterType="java.lang.Integer"
+		resultType="com.hqyj.crm.production.entity.Provider">
+		select p.provider_id,
+		provider_for_short,phone,linkman,email,deposit_bank,provider_name,
+		address, postalcode, linkman_phone, facsimile,
+		account,
+		credibility,
+		remark
+		from provider p inner join provider_info pi on
+		p.provider_id=pi.provider_id where
+		p.provider_id=#{providerId}
+
+	</select>
+	<select id="selectProviderByKeyword" parameterType="java.lang.String"
+		resultType="com.hqyj.crm.production.entity.Provider">
+		select
+		<include refid="provider" />
+		from provider where provider_for_short like #{keyword}
+	</select>
+	<select id="selectAllProvider"
+		resultType="com.hqyj.crm.production.entity.Provider">
+		select
+		<include refid="provider" />
+		from provider
+	</select>
+
+	<select id="selectByPrimaryKey"
+		parameterType="java.lang.Integer"
+		resultType="com.hqyj.crm.production.entity.Provider">
+		select
+		<include refid="provider_info" />
+		from provider_info
+		where provider_id = #{providerId,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteManyProvider"
+		parameterType="java.lang.Integer">
+		delete from provider
+		where provider_id IN
+		<foreach collection="array" item="providerId" open="(" close=")" separator=",">
+				#{providerId,jdbcType=INTEGER}
+		</foreach>
+	</delete>
+	<delete id="deleteManyProviderInfo"
+		parameterType="java.lang.Integer">
+		delete from provider_info
+		where provider_id IN
+		<foreach collection="array" item="providerId" open="(" close=")" separator=",">
+				#{providerId,jdbcType=INTEGER}
+		</foreach>
+	</delete>
+	<delete id="deleteProviderInfoByPrimaryKey"
+		parameterType="java.lang.Integer">
+		delete from provider_info
+		where provider_id =
+		#{providerId,jdbcType=INTEGER}
+	</delete>
+	<delete id="deleteProviderByPrimaryKey"
+		parameterType="java.lang.Integer">
+		delete from provider
+		where provider_id =
+		#{providerId,jdbcType=INTEGER}
+	</delete>
+
+	<insert id="insertProviderSelective"
+		parameterType="com.hqyj.crm.production.entity.Provider"
+		useGeneratedKeys="true" keyColumn="provider_id"
+		keyProperty="providerId">
+		insert into provider
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="providerId != null">
+				provider_id,
+			</if>
+			<if test="providerForShort != null">
+				provider_for_short,
+			</if>
+			<if test="phone != null">
+				phone,
+			</if>
+			<if test="linkman != null">
+				linkman,
+			</if>
+			<if test="email != null">
+				email,
+			</if>
+			<if test="depositBank != null">
+				deposit_bank,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="providerId != null">
+				#{providerId,jdbcType=INTEGER},
+			</if>
+			<if test="providerForShort != null">
+				#{providerForShort,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null">
+				#{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="linkman != null">
+				#{linkman,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				#{email,jdbcType=VARCHAR},
+			</if>
+			<if test="depositBank != null">
+				#{depositBank,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<insert id="insertProviderInfoSelective"
+		parameterType="com.hqyj.crm.production.entity.Provider"
+		useGeneratedKeys="true" keyColumn="provider_id"
+		keyProperty="providerId">
+		insert into provider_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="providerId != null">
+				provider_id,
+			</if>
+			<if test="providerName != null">
+				provider_name,
+			</if>
+			<if test="address != null">
+				address,
+			</if>
+			<if test="postalcode != null">
+				postalcode,
+			</if>
+			<if test="linkmanPhone != null">
+				linkman_phone,
+			</if>
+			<if test="facsimile != null">
+				facsimile,
+			</if>
+			<if test="account != null">
+				account,
+			</if>
+			<if test="credibility != null">
+				credibility,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="providerId != null">
+				#{providerId,jdbcType=INTEGER},
+			</if>
+			<if test="providerName != null">
+				#{providerName,jdbcType=VARCHAR},
+			</if>
+			<if test="address != null">
+				#{address,jdbcType=VARCHAR},
+			</if>
+			<if test="postalcode != null">
+				#{postalcode,jdbcType=VARCHAR},
+			</if>
+			<if test="linkmanPhone != null">
+				#{linkmanPhone,jdbcType=VARCHAR},
+			</if>
+			<if test="facsimile != null">
+				#{facsimile,jdbcType=VARCHAR},
+			</if>
+			<if test="account != null">
+				#{account,jdbcType=VARCHAR},
+			</if>
+			<if test="credibility != null">
+				#{credibility,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<!-- providerForShort,phone,linkman,email,depositBank -->
+	<update id="updateProviderByPrimaryKeySelective"
+		parameterType="com.hqyj.crm.production.entity.Provider">
+		update provider
+		<set>
+			<if test="providerForShort != null">
+				provider_for_short =
+				#{providerForShort,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null">
+				phone = #{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="linkman != null">
+				linkman = #{linkman,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				email = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="depositBank != null">
+				deposit_bank = #{depositBank,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where provider_id = #{providerId,jdbcType=INTEGER}
+	</update>
+	<update id="updateProviderInfoByPrimaryKeySelective"
+		parameterType="com.hqyj.crm.production.entity.Provider">
+		update provider_info
+		<set>
+			<if test="providerName != null">
+				provider_name = #{providerName,jdbcType=VARCHAR},
+			</if>
+			<if test="address != null">
+				address = #{address,jdbcType=VARCHAR},
+			</if>
+			<if test="postalcode != null">
+				postalcode = #{postalcode,jdbcType=VARCHAR},
+			</if>
+			<if test="linkmanPhone != null">
+				linkman_phone = #{linkmanPhone,jdbcType=VARCHAR},
+			</if>
+			<if test="facsimile != null">
+				facsimile = #{facsimile,jdbcType=VARCHAR},
+			</if>
+			<if test="account != null">
+				account = #{account,jdbcType=VARCHAR},
+			</if>
+			<if test="credibility != null">
+				credibility = #{credibility,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where provider_id = #{providerId,jdbcType=INTEGER}
+	</update>
+
+</mapper>

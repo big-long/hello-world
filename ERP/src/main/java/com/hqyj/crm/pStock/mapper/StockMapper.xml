@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hqyj.crm.pStock.dao.StockMapper">
+<resultMap id="StockMap"
+		type="com.hqyj.crm.pStock.entity.Stock">
+		<id column="inbill_id" jdbcType="VARCHAR" property="inbillId" />
+		<result column="repertoryl_number" jdbcType="INTEGER"
+			property="repertorylNumber" />
+		<result column="inbill_id" jdbcType="VARCHAR"
+			property="inbillId" />
+		<result column="product_name" jdbcType="VARCHAR" property="productName" />
+		<result column="production_place" jdbcType="VARCHAR"
+			property="productionPlace" />
+		<result column="operator" jdbcType="VARCHAR" property="operator" />
+	</resultMap>
+	
+	<resultMap id="StockInfoMap"
+		type="com.hqyj.crm.pStock.entity.StockInfo">
+		<id column="inbill_id" jdbcType="VARCHAR" property="inbillId" />
+		<result column="inbill_number" jdbcType="INTEGER"
+			property="inbillNumber" />
+		<result column="inbill_date" jdbcType="TIMESTAMP"
+			property="inbillDate" />
+		<result column="handler_name" jdbcType="VARCHAR"
+			property="handlerName" />
+		<result column="order_id" jdbcType="VARCHAR" property="orderId" />
+		<result column="production_id" jdbcType="VARCHAR"
+			property="productionId" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+	</resultMap>
+	
+	<sql id="stock_info">
+		inbill_id, order_id, production_id, repertory_number, operator, remark
+	</sql>
+	<sql id="stock">
+		inbill_id, product_name, production_place, inbill_number, inbill_date,
+		handler_name
+	</sql>
+	<sql id="stock_total">
+		inbill_id, product_name, production_place, inbill_number, inbill_date,
+		handler_name, order_id, production_id, repertory_number, operator,
+		remark
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+		resultMap="StockInfoMap">
+		select
+		<include refid="stock_info" />
+		from p_stock_info
+		where inbill_id = #{inbillId,jdbcType=VARCHAR}
+	</select>
+	<!-- 查入库表 -->
+	<select id="findStockList" resultMap="StockMap">
+	select*from p_stock
+	</select>
+	<!-- 模糊查询入库表 -->
+	<select id="findStockMohu" parameterType="java.lang.String" resultMap="StockMap">
+		select *from p_stock where product_name like #{name,jdbcType=VARCHAR} or production_place like #{name,jdbcType=VARCHAR}
+	</select>
+	<!-- 根据Id查入库表 -->
+	<select id="findStockById" resultMap="StockMap" parameterType="java.lang.String">
+	select*from p_stock where inbill_id = #{inbillId,jdbcType=VARCHAR}
+	</select>
+	<!-- 查入库订单表 -->
+	<select id="findStockListInfoByinbillId" resultMap="StockInfoMap" parameterType="java.lang.String">
+	select * from p_stock_info where inbill_id=#{inbillId,jdbcType=VARCHAR} ORDER BY inbill_date desc
+	</select>
+	<!-- 根据订单号查询订单 -->
+	<select id="findStockInfoByOrderId" resultMap="StockInfoMap" parameterType="java.lang.String">
+	select * from p_stock_info where order_id=#{orderId,jdbcType=VARCHAR}
+	</select>
+	<!-- 查入库订单表2.0 -->
+	<!--  <select id="findStockListInfoByStock" resultMap="StockInfoMap" parameterType="com.hqyj.crm.pStock.entity.Stock">
+		select * from p_stock_info 
+			<if test="inbillId != null">
+			where inbill_id=#{inbillId,jdbcType=VARCHAR}
+			</if>
+			<if test="productName != null">
+			  where inbill_id in(select inbill_id from p_stock where product_name=#{productName,jdbcType=VARCHAR})
+			</if>
+			<if test="productionPlace != null">
+			where inbill_id in(select inbill_id from p_stock where production_place=#{productionPlace,jdbcType=VARCHAR})
+			</if>
+			<if test="operator != null">
+			where inbill_id in(select inbill_id from p_stock where operator=#{operator,jdbcType=VARCHAR})
+			</if>
+	
+	</select> -->
+	<!-- 入库表删 -->
+	<delete id="deleteStockById" parameterType="java.lang.String">
+		delete from p_stock
+		where inbill_id = #{inbillId,jdbcType=VARCHAR}
+	</delete>
+	<!-- 入库订单表删 -->
+	<delete id="deleteStockInfoById" parameterType="java.lang.String">
+		delete from p_stock_info
+		where order_id = #{orderId,jdbcType=VARCHAR}
+	</delete>
+	<!-- 入库订单表增 -->
+	<insert id="insertStockInfo"
+		parameterType="com.hqyj.crm.pStock.entity.StockInfo">
+		insert into p_stock_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="inbillId != null">
+				inbill_id,
+			</if>
+			<if test="inbillNumber != null">
+				inbill_number,
+			</if>
+			<if test="inbillDate != null">
+				inbill_date,
+			</if>
+			<if test="handlerName != null">
+				handler_name,
+			</if>
+			<if test="orderId != null">
+				order_id,
+			</if>
+			<if test="productionId != null">
+				production_id,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="inbillId != null">
+				#{inbillId,jdbcType=VARCHAR},
+			</if>
+			<if test="inbillNumber != null">
+				#{inbillNumber,jdbcType=INTEGER},
+			</if>
+			<if test="inbillDate != null">
+				#{inbillDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="handlerName != null">
+				#{handlerName,jdbcType=VARCHAR},
+			</if>
+			<if test="orderId != null">
+				#{orderId,jdbcType=VARCHAR},
+			</if>
+			<if test="productionId != null">
+				#{productionId,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<!-- 入库表增 -->
+	<insert id="insertStock"
+		parameterType="com.hqyj.crm.pStock.entity.Stock">
+		insert into p_stock
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="inbillId != null">
+				inbill_id,
+			</if>
+			<if test="productName != null">
+				product_name,
+			</if>
+			<if test="productionPlace != null">
+				production_place,
+			</if>
+			<if test="repertoryNumber != null">
+				repertory_number,
+			</if>
+			<if test="operator != null">
+				operator,
+			</if>
+			
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="inbillId != null">
+				#{inbillId,jdbcType=VARCHAR},
+			</if>
+			<if test="productName != null">
+				#{productName,jdbcType=VARCHAR},
+			</if>
+			<if test="productionPlace != null">
+				#{productionPlace,jdbcType=VARCHAR},
+			</if>
+			<if test="repertoryNumber != null">
+				#{repertoryNumber,jdbcType=INTEGER},
+			</if>
+			<if test="operator != null">
+				#{operator,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<!-- 入库表改 -->
+	<update id="updateStock"
+		parameterType="com.hqyj.crm.pStock.entity.Stock">
+		update p_stock
+		<set>
+			<if test="productName != null">
+				product_name=#{productName,jdbcType=VARCHAR},
+			</if>
+			<if test="productionPlace != null">
+				production_place=#{productionPlace,jdbcType=VARCHAR},
+			</if>
+			<if test="repertoryNumber != null">
+				repertory_number=#{repertoryNumber,jdbcType=INTEGER},
+			</if>
+			<if test="operator != null">
+				operator=#{operator,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where inbill_id = #{inbillId,jdbcType=VARCHAR}
+	</update>
+	<!-- 入库订单表改 -->
+	<update id="updateStockInfo"
+		parameterType="com.hqyj.crm.pStock.entity.StockInfo">
+		update p_stock_info
+		<set>
+		<if test="inbillId != null">
+				inbill_id=#{inbillId,jdbcType=VARCHAR},
+			</if>
+			<if test="inbillNumber != null">
+				inbill_number=#{inbillNumber,jdbcType=INTEGER},
+			</if>
+			<if test="inbillDate != null">
+				inbill_date=#{inbillDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="handlerName != null">
+				handler_name=#{handlerName,jdbcType=VARCHAR},
+			</if>
+			<if test="productionId != null">
+				production_id=#{productionId,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				remark=#{remark,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where order_id=#{orderId,jdbcType=VARCHAR}
+	</update>
+
+<!-- 
+	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+		resultMap="StockInfoMap">
+		select
+		<include refid="stock" />
+		from p_stock
+		where inbill_id = #{inbillId,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from p_stock
+		where inbill_id = #{inbillId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert"
+		parameterType="com.hqyj.crm.pStock.entity.Stock">
+		insert into p_stock (inbill_id, product_name, production_place,
+		inbill_number, inbill_date, handler_name
+		)
+		values (#{inbillId,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR},
+		#{productionPlace,jdbcType=VARCHAR},
+		#{inbillNumber,jdbcType=INTEGER}, #{inbillDate,jdbcType=TIMESTAMP}, #{handlerName,jdbcType=VARCHAR}
+		)
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.hqyj.crm.pStock.entity.Stock">
+		insert into p_stock
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="inbillId != null">
+				inbill_id,
+			</if>
+			<if test="productName != null">
+				product_name,
+			</if>
+			<if test="productionPlace != null">
+				production_place,
+			</if>
+			<if test="inbillNumber != null">
+				inbill_number,
+			</if>
+			<if test="inbillDate != null">
+				inbill_date,
+			</if>
+			<if test="handlerName != null">
+				handler_name,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="inbillId != null">
+				#{inbillId,jdbcType=VARCHAR},
+			</if>
+			<if test="productName != null">
+				#{productName,jdbcType=VARCHAR},
+			</if>
+			<if test="productionPlace != null">
+				#{productionPlace,jdbcType=VARCHAR},
+			</if>
+			<if test="inbillNumber != null">
+				#{inbillNumber,jdbcType=INTEGER},
+			</if>
+			<if test="inbillDate != null">
+				#{inbillDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="handlerName != null">
+				#{handlerName,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.hqyj.crm.pStock.entity.Stock">
+		update p_stock
+		<set>
+			<if test="productName != null">
+				product_name = #{productName,jdbcType=VARCHAR},
+			</if>
+			<if test="productionPlace != null">
+				production_place = #{productionPlace,jdbcType=VARCHAR},
+			</if>
+			<if test="inbillNumber != null">
+				inbill_number = #{inbillNumber,jdbcType=INTEGER},
+			</if>
+			<if test="inbillDate != null">
+				inbill_date = #{inbillDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="handlerName != null">
+				handler_name = #{handlerName,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where inbill_id = #{inbillId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.hqyj.crm.pStock.entity.Stock">
+		update p_stock
+		set product_name = #{productName,jdbcType=VARCHAR},
+		production_place = #{productionPlace,jdbcType=VARCHAR},
+		inbill_number = #{inbillNumber,jdbcType=INTEGER},
+		inbill_date = #{inbillDate,jdbcType=TIMESTAMP},
+		handler_name = #{handlerName,jdbcType=VARCHAR}
+		where inbill_id = #{inbillId,jdbcType=VARCHAR}
+	</update> -->
+</mapper>

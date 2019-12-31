@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hqyj.crm.production.dao.ProductMapper">
+	<resultMap id="BaseResultMap"
+		type="com.hqyj.crm.production.entity.Product">
+		<id column="product_id" jdbcType="INTEGER" property="productId" />
+		<result column="product_name" jdbcType="VARCHAR"
+			property="productName" />
+		<result column="product_nickname" jdbcType="VARCHAR"
+			property="productNickname" />
+		<result column="production_place" jdbcType="VARCHAR"
+			property="productionPlace" />
+		<result column="unit" jdbcType="VARCHAR" property="unit" />
+		<result column="size" jdbcType="VARCHAR" property="size" />
+		<result column="pack" jdbcType="VARCHAR" property="pack" />
+		<result column="batch_number" jdbcType="VARCHAR"
+			property="batchNumber" />
+		<result column="approval_number" jdbcType="VARCHAR"
+			property="approvalNumber" />
+		<result column="producer" jdbcType="VARCHAR"
+			property="producer" />
+		<result column="category" jdbcType="VARCHAR"
+			property="category" />
+		<result column="price" jdbcType="DECIMAL" property="price" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+	</resultMap>
+	<sql id="product_total">
+		p.product_id product_id, product_name, product_nickname,
+		production_place, unit, size, pack,
+		batch_number,
+		approval_number,
+		producer, category, price, remark
+	</sql>
+	<sql id="product_info">
+		product_id, product_nickname, pack,approval_number,
+		producer, category, price, remark
+	</sql>
+	<sql id="product">
+		product_id, product_name, production_place, unit,
+		size,batch_number
+	</sql>
+	<select id="selectProductByProductName" parameterType="java.lang.String" resultType="com.hqyj.crm.production.entity.Product">
+		select <include refid="product"/> from product where product_name=#{productName}
+	</select>
+	
+	<select id="selectProducts"
+		resultType="com.hqyj.crm.production.entity.Product">
+		select
+		<include refid="product" />
+		from product
+		<where>
+			<if test="productId != null">
+				and product_id=#{productId},
+			</if>
+			<if test="productName != null">
+				and product_name=#{productName},
+			</if>
+			<if test="productionPlace != null">
+				and production_place=#{productionPlace},
+			</if>
+			<if test="unit != null">
+				and unit=#{unit},
+			</if>
+			<if test="size != null">
+				and size=#{size},
+			</if>
+			<if test="batchNumber != null">
+				and batch_number=#{batchNumber},
+			</if>
+			<!-- <if test="approvalNumber != null"> and approval_number=#{approvalNumber}, 
+				</if> <if test="producer != null"> and producer=#{producer}, </if> <if test="category 
+				!= null"> and category=#{category}, </if> <if test="price != null"> and price=#{price}, 
+				</if> <if test="remark != null"> and remark=#{remark}, </if> -->
+		</where>
+	</select>
+	<select id="selectByProductName"
+		parameterType="com.hqyj.crm.production.entity.Product"
+		resultType="com.hqyj.crm.production.entity.Product">
+		select
+		<include refid="product_total" />
+		from product p inner join product_info pi on p.product_id=pi.product_id
+		where p.product_name=#{productName}
+	</select>
+	<select id="queryCategroys" resultType="java.lang.String">
+		select category from
+		product_info
+	</select>
+<!-- production_place, unit,
+		size,batch_number -->
+	<select id="selectProductByKeyWord"
+		parameterType="java.lang.String" resultMap="BaseResultMap">
+		select p.product_id as product_id,p.product_name as product_name,p.production_place as production_place,
+		p.unit as unit,p.size as size,p.batch_number as batch_number
+		from product p inner join product_info pi on p.product_id=pi.product_id
+		<where>
+		<if test="category!=null and category!=''">
+				 pi.category=#{category,jdbcType=VARCHAR}
+			</if>
+			<if test="keyWord!=null and keyWord!=''">
+				and p.product_name like #{keyWord}
+			</if>
+			
+		</where>
+	</select>
+	<select id="selectProductInfoByPrimaryKey"
+		parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="product_info" />
+		from product_info
+		where product_id = #{productId,jdbcType=INTEGER}
+	</select>
+	<select id="selectProdcutByPrimaryKey"
+		parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="product" />
+		from product
+		where product_id = #{productId,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteProductByPrimaryKey"
+		parameterType="java.lang.Integer">
+		delete from product
+		where product_id =
+		#{productId,jdbcType=INTEGER}
+	</delete>
+	<delete id="deleteProductInfoByPrimaryKey"
+		parameterType="java.lang.Integer">
+		delete from product_info
+		where product_id =
+		#{productId,jdbcType=INTEGER}
+	</delete>
+
+	<delete id="deleteManyProductInfo"
+		parameterType="java.lang.Integer">
+		delete from product_info
+		where product_id IN
+		<foreach collection="array" item="productId" open="("
+			separator="," close=")">
+			#{productId,jdbcType=INTEGER}
+		</foreach>
+	</delete>
+	<delete id="deleteManyProduct" parameterType="java.lang.Integer">
+		delete from product
+		where product_id IN
+		<foreach collection="array" item="productId" open="("
+			separator="," close=")">
+			#{productId,jdbcType=INTEGER}
+		</foreach>
+	</delete>
+
+	<insert id="insertProductSelective"
+		parameterType="com.hqyj.crm.production.entity.Product"
+		useGeneratedKeys="true" keyColumn="product_id" keyProperty="productId">
+		insert into product
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="productId != null">
+				product_id,
+			</if>
+			<if test="productName != null">
+				product_name,
+			</if>
+
+			<if test="productionPlace != null">
+				production_place,
+			</if>
+			<if test="unit != null">
+				unit,
+			</if>
+			<if test="size != null">
+				size,
+			</if>
+			<if test="batchNumber != null">
+				batch_number,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="productId != null">
+				#{productId,jdbcType=INTEGER},
+			</if>
+			<if test="productName != null">
+				#{productName,jdbcType=VARCHAR},
+			</if>
+			<if test="productionPlace != null">
+				#{productionPlace,jdbcType=VARCHAR},
+			</if>
+			<if test="unit != null">
+				#{unit,jdbcType=VARCHAR},
+			</if>
+			<if test="size != null">
+				#{size,jdbcType=VARCHAR},
+			</if>
+			<if test="batchNumber != null">
+				#{batchNumber,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<insert id="insertProductInfoSelective"
+		parameterType="com.hqyj.crm.production.entity.Product"
+		useGeneratedKeys="true" keyColumn="product_id" keyProperty="productId">
+		insert into product_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="productId != null">
+				product_id,
+			</if>
+			<if test="productNickname != null">
+				product_nickname,
+			</if>
+			<if test="pack != null">
+				pack,
+			</if>
+			<if test="approvalNumber != null">
+				approval_number,
+			</if>
+			<if test="producer != null">
+				producer,
+			</if>
+			<if test="category != null">
+				category,
+			</if>
+			<if test="price != null">
+				price,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="productId != null">
+				#{productId,jdbcType=INTEGER},
+			</if>
+			<if test="productNickname != null">
+				#{productNickname,jdbcType=VARCHAR},
+			</if>
+			<if test="pack != null">
+				#{pack,jdbcType=VARCHAR},
+			</if>
+			<if test="approvalNumber != null">
+				#{approvalNumber,jdbcType=VARCHAR},
+			</if>
+			<if test="producer != null">
+				#{producer,jdbcType=VARCHAR},
+			</if>
+			<if test="category != null">
+				#{category,jdbcType=VARCHAR},
+			</if>
+			<if test="price != null">
+				#{price,jdbcType=DECIMAL},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateProductInfoByPrimaryKeySelective"
+		parameterType="com.hqyj.crm.production.entity.Product">
+		update product_info
+		<set>
+			<if test="productNickname != null">
+				product_nickname = #{productNickname,jdbcType=VARCHAR},
+			</if>
+			<if test="pack != null">
+				pack = #{pack,jdbcType=VARCHAR},
+			</if>
+			<if test="approvalNumber != null">
+				approval_number = #{approvalNumber,jdbcType=VARCHAR},
+			</if>
+			<if test="producer != null">
+				producer = #{producer,jdbcType=VARCHAR},
+			</if>
+			<if test="category != null">
+				category = #{category,jdbcType=VARCHAR},
+			</if>
+			<if test="price != null">
+				price = #{price,jdbcType=DECIMAL},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where product_id = #{productId,jdbcType=INTEGER}
+	</update>
+	<update id="updateProductByPrimaryKeySelective"
+		parameterType="com.hqyj.crm.production.entity.Product">
+		update product
+		<set>
+			<if test="productName != null">
+				product_name = #{productName,jdbcType=VARCHAR},
+			</if>
+			<if test="productionPlace != null">
+				production_place = #{productionPlace,jdbcType=VARCHAR},
+			</if>
+			<if test="unit != null">
+				unit = #{unit,jdbcType=VARCHAR},
+			</if>
+			<if test="size != null">
+				size = #{size,jdbcType=VARCHAR},
+			</if>
+			<if test="batchNumber != null">
+				batch_number = #{batchNumber,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where product_id = #{productId,jdbcType=INTEGER}
+	</update>
+
+</mapper>

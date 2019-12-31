@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hqyj.crm.production.dao.RegistMapper">
+	<resultMap id="BaseResultMap"
+		type="com.hqyj.crm.production.entity.Regist">
+		<id column="production_id" jdbcType="VARCHAR"
+			property="productionId" />
+		<result column="product_name" jdbcType="VARCHAR"
+			property="productName" />
+		<result column="produce_number" jdbcType="INTEGER"
+			property="produceNumber" />
+		<result column="produce_date" jdbcType="TIMESTAMP"
+			property="produceDate" />
+		<result column="status" jdbcType="VARCHAR" property="status" />
+		<result column="storage_date" jdbcType="TIMESTAMP"
+			property="storageDate" />
+		<result column="hander_name" jdbcType="VARCHAR"
+			property="handerName" />
+		<result column="operator" jdbcType="VARCHAR"
+			property="operator" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		production_id, product_name, produce_number, produce_date,
+		status, storage_date,
+		hander_name, operator, remark
+	</sql>
+	<delete id="deleteManyRegist" parameterType="java.lang.Integer">
+		delete from p_regist
+		where production_id IN
+		<foreach collection="array" item="productionId" open="("
+			separator="," close=")">
+			#{productionId,jdbcType=INTEGER}
+		</foreach>
+
+	</delete>
+	<select id="selectAllRegists"
+		parameterType="com.hqyj.crm.production.entity.Regist"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from p_regist
+		<where>
+			<if test="productionId != null">
+				and production_id=#{prodcutionId}
+			</if>
+			<if test="productName != null">
+				and product_name=#{productName}
+			</if>
+			<if test="produceNumber != null">
+				and produce_number=#{produceNumber}
+			</if>
+			<if test="produceDate != null">
+				and produce_date=#{produceDate}
+			</if>
+			<if test="status != null">
+				and status=#{status}
+			</if>
+			<if test="storageDate != null">
+				and storage_date=#{storageDate}
+			</if>
+			<if test="handerName != null">
+				and hander_name=#{handerName}
+			</if>
+			<if test="operator != null">
+				and operator=#{operator}
+			</if>
+			<if test="remark != null">
+				and remark=#{remark}
+			</if>
+		</where>
+	</select>
+
+	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+		resultType="com.hqyj.crm.production.entity.Regist">
+		SELECT
+		p_regist.production_id AS production_id,
+		p_regist.product_name AS product_name,
+		p_regist.produce_number AS produce_number,
+		p_regist.produce_date AS produce_date,
+		p_regist.`status` AS `status`,
+		p_regist.storage_date AS storage_date,
+		p_regist.hander_name AS hander_name,
+		p_regist.operator AS operator,
+		p_regist.remark AS remark,
+		product_info.producer AS producer,
+		product.size AS size,
+		product_info.price AS price
+		FROM
+		p_regist
+		INNER JOIN product ON p_regist.product_name = product.product_name
+		INNER JOIN product_info ON product.product_id = product_info.product_id
+		where p_regist.production_id=#{productionId}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		p_regist
+		where production_id = #{productionId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert"
+		parameterType="com.hqyj.crm.production.entity.Regist">
+		insert into p_regist (production_id, product_name,
+		produce_number,
+		produce_date, status, storage_date,
+		hander_name,
+		operator, remark
+		)
+		values (#{productionId,jdbcType=VARCHAR},
+		#{productName,jdbcType=VARCHAR},
+		#{produceNumber,jdbcType=INTEGER},
+		#{produceDate,jdbcType=TIMESTAMP}, #{status,jdbcType=VARCHAR},
+		#{storageDate,jdbcType=TIMESTAMP},
+		#{handerName,jdbcType=VARCHAR},
+		#{operator,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR}
+		)
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.hqyj.crm.production.entity.Regist">
+		insert into p_regist
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="productionId != null">
+				production_id,
+			</if>
+			<if test="productName != null">
+				product_name,
+			</if>
+			<if test="produceNumber != null">
+				produce_number,
+			</if>
+			<if test="produceDate != null">
+				produce_date,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="storageDate != null">
+				storage_date,
+			</if>
+			<if test="handerName != null">
+				hander_name,
+			</if>
+			<if test="operator != null">
+				operator,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="productionId != null">
+				#{productionId,jdbcType=VARCHAR},
+			</if>
+			<if test="productName != null">
+				#{productName,jdbcType=VARCHAR},
+			</if>
+			<if test="produceNumber != null">
+				#{produceNumber,jdbcType=INTEGER},
+			</if>
+			<if test="produceDate != null">
+				#{produceDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=VARCHAR},
+			</if>
+			<if test="storageDate != null">
+				#{storageDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="handerName != null">
+				#{handerName,jdbcType=VARCHAR},
+			</if>
+			<if test="operator != null">
+				#{operator,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.hqyj.crm.production.entity.Regist">
+		update p_regist
+		<set>
+			<if test="productName != null">
+				product_name = #{productName,jdbcType=VARCHAR},
+			</if>
+			<if test="produceNumber != null">
+				produce_number = #{produceNumber,jdbcType=INTEGER},
+			</if>
+			<if test="produceDate != null">
+				produce_date = #{produceDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=VARCHAR},
+			</if>
+			<if test="storageDate != null">
+				storage_date = #{storageDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="handerName != null">
+				hander_name = #{handerName,jdbcType=VARCHAR},
+			</if>
+			<if test="operator != null">
+				operator = #{operator,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where production_id = #{productionId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.hqyj.crm.production.entity.Regist">
+		update p_regist
+		set product_name =
+		#{productName,jdbcType=VARCHAR},
+		produce_number =
+		#{produceNumber,jdbcType=INTEGER},
+		produce_date =
+		#{produceDate,jdbcType=TIMESTAMP},
+		status = #{status,jdbcType=VARCHAR},
+		storage_date = #{storageDate,jdbcType=TIMESTAMP},
+		hander_name =
+		#{handerName,jdbcType=VARCHAR},
+		operator =
+		#{operator,jdbcType=VARCHAR},
+		remark = #{remark,jdbcType=VARCHAR}
+		where
+		production_id = #{productionId,jdbcType=VARCHAR}
+	</update>
+</mapper>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- 配置shiro的核心组件SecurityManager -->
+	<bean id="securityManager"
+		class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<!-- <property name="cacheManager" ref="cacheManager" /> -->
+		<property name="realm" ref="shiroRealm"></property>
+		<property name="rememberMeManager" ref="rememberMeManager" />
+	</bean>
+
+	<bean id="shiroRealm" class="com.hqyj.crm.common.shrio.ShiroRealm">
+		<!-- <property name="cacheManager" ref="cacheManager" /> -->
+	</bean>
+	<bean id="rememberMeCookie"
+		class="org.apache.shiro.web.servlet.SimpleCookie">
+		<constructor-arg value="rememberMe" />
+		<property name="httpOnly" value="true" />
+		<property name="maxAge" value="2592000" />
+	</bean>
+
+	<bean id="rememberMeManager"
+		class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+		<property name="cookie" ref="rememberMeCookie" />
+		<!--16,24,32的base64 -->
+		<property name="cipherKey"
+			value="#{T(org.apache.shiro.codec.Base64).decode('MTIzNDU2Nzg5MGFiY2RlZg==')}" />
+	</bean>
+	<!-- 配置ehcache缓存 -->
+	<!-- <bean id="cacheManager"
+		class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<property name="cacheManagerConfigFile"
+			value="classpath:shiro/ehcache-shrio.xml"></property>
+		<property name="shared" value="true"></property>
+	</bean> -->
+	<!-- 配置shiroFilter -->
+	<bean id="shiroFilter"
+		class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<!-- 除anon权限以外的所有没登陆的访问都到这 -->
+		<property name="loginUrl" value="/system/login" />
+		<!-- 登陆成功后显示的页面 -->
+		<property name="successUrl" value="/system/toMain" />
+		<!-- 登录后访问没有权限的页面后跳转的页面 -->
+		<property name="unauthorizedUrl" value="/system/noPermission" />
+		<!-- <property name="filters"> <map> <entry key="role"> <bean class="com.longmao.car.system.shrio.RolesFilter"></bean> 
+			</entry> </map> </property> -->
+		<property name="filterChainDefinitions">
+			<value>
+				/static/**=anon
+				/system/login=anon 		 <!-- anon表示匿名访问，就是不用登录 -->
+				/system/doLogin=anon
+				/system/captcha.jpg=anon
+				/logout=logout
+				/verifyCodePicController/getVerifyCodePic.do=anon
+				<!-- /**/*.do = authc --> 		<!-- authc表示要登录后，才能访问 -->
+				/**=user
+			</value>
+		</property>
+	</bean>
+	<!-- 开启在spring的bean组件中使用shiro的注解 -->
+	<!-- true代表基于类的代理 -->
+	<!-- <aop:config proxy-target-class="true"/> -->
+	<!-- shrio的生命周期处理器 -->
+	<bean id="lifecycleBeanPostProcessor"
+	class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+	
+	<bean id="shrioRealmException" class="com.hqyj.crm.common.shrio.ResolveException"> </bean>
+</beans>
+        

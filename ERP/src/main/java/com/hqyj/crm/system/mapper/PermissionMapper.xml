@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hqyj.crm.system.dao.PermissionMapper">
+  <resultMap id="BaseResultMap" type="com.hqyj.crm.system.entity.Permission">
+    <result column="permission_id" jdbcType="INTEGER" property="permissionId" />
+    <result column="p_id" jdbcType="INTEGER" property="pId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="percode" jdbcType="VARCHAR" property="percode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  
+  <resultMap id="BaseResultMapOfzTree" type="com.hqyj.crm.system.ov.PermissionTree">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="p_id" jdbcType="INTEGER" property="pId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+  
+  <select id="selectPermissionByRoleId"
+		resultType="java.lang.String">
+		select permission.percode as percode from m_role inner join
+		m_role_permission on m_role.role_id=m_role_permission.role_id
+		inner join permission on
+		permission.permission_id=m_role_permission.permission_id
+		where m_role.role_id=#{roleId}
+	</select>
+  <!-- 增 -->
+  <insert id="insert" parameterType="com.hqyj.crm.system.entity.Permission">
+    insert into permission (permission_id, p_id, name, 
+      url, percode, create_time
+      )
+    values (#{permissionId,jdbcType=INTEGER}, #{pId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+      #{url,jdbcType=VARCHAR}, #{percode,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hqyj.crm.system.entity.Permission">
+    insert into permission
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="permissionId != null">
+        permission_id,
+      </if>
+      <if test="pId != null">
+        p_id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="percode != null">
+        percode,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="permissionId != null">
+        #{permissionId,jdbcType=INTEGER},
+      </if>
+      <if test="pId != null">
+        #{pId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="percode != null">
+        #{percode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <!-- +++++++++++++++++++++++++++++++ -->
+  <!--  queryPermissionsByRoleId-->
+  <select id="queryPermissionsByRoleId" parameterType="java.lang.Integer" resultMap="BaseResultMap" >
+  	SELECT
+		permission.permission_id,
+		permission.p_id,
+		permission.`name`,
+		permission.url,
+		permission.percode,
+		permission.create_time 
+	FROM
+		permission
+		INNER JOIN m_role_permission ON permission.permission_id = m_role_permission.permission_id 
+	WHERE
+		m_role_permission.role_id = #{roleId}
+  </select>
+  
+  <!-- 删 -->
+  <delete id="deletepermissionByid" parameterType="java.lang.Integer">
+      delete from permission 
+        where permission_id=#{id,jdbcType=INTEGER}
+  </delete>
+  
+  <!-- 改 -->
+  <update id="updatePermission" parameterType="com.hqyj.crm.system.entity.Permission">
+  update permission
+    <set>
+    	<if test="name !=null">
+    		name=#{name,jdbcType=VARCHAR},
+    	</if>
+    	<if test="pId!=null">
+    		p_id=#{pId,jdbcType=INTEGER},
+    	</if>
+    	<if test="url !=null">
+    		url=#{url,jdbcType=VARCHAR},
+    	</if>
+    	<if test="percode !=null">
+    		percode=#{percode,jdbcType=VARCHAR},
+    	</if>
+    	<if test="createTime !=null">
+    		create_time=#{createTime,jdbcType=TIMESTAMP},
+    	</if>
+    </set>
+      where permission_id=#{permissionId,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 查 -->
+  <!-- 查所有 -->
+  <select id="permissionList" resultMap="BaseResultMap">
+  select * from permission
+  </select>
+  <!-- 模糊查询 -->
+  <select id="findpermissionList" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT * from permission WHERE name like #{name}
+  </select>
+  <!--queryAllPermissions，返回一个符合ztree的权限集合  -->
+  <select id="queryAllPermissions" resultMap="BaseResultMapOfzTree">
+  	select permission_id AS id,p_id ,name FROM permission
+  </select>
+  
+  <!-- queryPermissinsTree,通过角色id查询一个角色拥有的权限，封装成一个permissionTree对象 -->
+  <select id="queryPermissinsTree" parameterType="java.lang.Integer" resultMap="BaseResultMapOfzTree" >
+  	SELECT
+		permission.permission_id as id,
+		permission.p_id,
+		permission.`name`
+	FROM
+		permission
+		INNER JOIN m_role_permission ON permission.permission_id = m_role_permission.permission_id 
+	WHERE
+		m_role_permission.role_id = #{roleId}
+  </select>
+</mapper>

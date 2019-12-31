@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hqyj.crm.order.dao.OrderMapper">
+	<resultMap id="BaseResultMap"
+		type="com.hqyj.crm.order.entity.Order">
+		<result column="order_id" jdbcType="VARCHAR" property="orderId" />
+		<result column="order_customer" jdbcType="VARCHAR"
+			property="orderCustomer" />
+		<result column="product_name" jdbcType="VARCHAR"
+			property="productName" />
+		<result column="order_number" jdbcType="INTEGER"
+			property="orderNumber" />
+		<result column="status" jdbcType="VARCHAR" property="status" />
+		<result column="order_date" jdbcType="TIMESTAMP"
+			property="orderDate" />
+		<result column="order_money" jdbcType="DECIMAL"
+			property="orderMoney" />
+		<result column="delivery_way" jdbcType="VARCHAR"
+			property="deliveryWay" />
+		<result column="delivery_date" jdbcType="TIMESTAMP"
+			property="deliveryDate" />
+		<result column="handler_name" jdbcType="VARCHAR"
+			property="handlerName" />
+		<result column="operator" jdbcType="VARCHAR"
+			property="operator" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+	</resultMap>
+
+
+	<!-- 查询订单表信息 -->
+	<sql id="order_info">
+		order_id, order_date,
+		order_money,delivery_way,delivery_date,handler_name,operator,remark
+	</sql>
+	<!-- 查询订单表信息 -->
+	<sql id="order_total">
+		order_id,order_customer,product_name,order_number,status,
+		order_date,
+		order_money,delivery_way,delivery_date,handler_name,operator,remark
+	</sql>
+	<sql id="order">
+		order_id,order_customer,product_name,order_number,status
+	</sql>
+	
+	<!--  插入订单信息表-->
+	<insert id="addOrderInfo" parameterType="com.hqyj.crm.order.entity.Order">
+		 insert into  order_info(order_id,order_date,order_money,delivery_way,delivery_date,handler_name,operator,remark) values(#{orderId},#{orderDate},#{orderMoney},#{deliveryWay},#{deliveryDate},#{handlerName},#{operator},#{remark})
+	</insert>
+
+	<!--queryAllOrders，查询所有的订单 -->
+	<select id="queryAllOrders" resultMap="BaseResultMap">
+		SELECT
+		<include refid="order" />
+		FROM `order`
+	</select>
+
+	<!--货运方式 -->
+	<select id="queryDeliveryWay" resultType="java.lang.String">
+		select name from
+		c_dictionaries where id='004'
+	</select>
+
+	<!--添加订单表 -->
+	<insert id="addOrder"
+		parameterType="com.hqyj.crm.order.entity.Order">
+		insert into `order`
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="orderId!=null">
+				order_id,
+			</if>
+			<if test="orderCustomer != null">
+				order_customer,
+			</if>
+			<if test=" productName != null">
+				product_name,
+			</if>
+			<if test="orderNumber != null">
+				order_number
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="orderId!=null">
+				#{orderId,jdbcType=VARCHAR},
+			</if>
+			<if test="orderCustomer != null">
+				#{orderCustomer,jdbcType=VARCHAR},
+			</if>
+			<if test="productName != null">
+				#{productName,jdbcType=VARCHAR},
+			</if>
+			<if test=" orderNumber != null">
+				#{orderNumber,jdbcType=INTEGER}
+			</if>
+		</trim>
+	</insert>
+	
+	<!--批量删除  -->
+	<delete id="deleteOrders" parameterType="java.lang.String">
+		DELETE FROM `order` WHERE order_id IN
+		<foreach collection="array" item="id" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<!--deleteOrderInfo，批量删除订单详情表  -->
+	<delete id="deleteOrderInfo" parameterType="java.lang.String">
+		DELETE FROM order_info where order_id IN 
+		<foreach collection="array" item="id" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<!--queryIdOfFinished，得到已完成的订单id  -->
+	<select id="queryIdOfFinished" resultType="java.lang.String">
+		select order_id FROM `order` where status='1'
+	</select>
+	
+	<!-- 批量审核订单 -->
+	<update id="updataStatusById" parameterType="java.lang.String" >
+		UPDATE   `order` SET`status`='1' WHERE order_id  IN
+		<foreach collection="array" item="id" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+	</update>
+	
+	<!--queryOrderInfoById,查询订单详情  -->
+	<select id="queryOrderInfoById" parameterType="java.lang.String" resultMap="BaseResultMap">
+			SELECT
+			<include refid="order_info" />
+			FROM order_info WHERE order_id=#{orderId,jdbcType=VARCHAR}
+	</select>
+</mapper>

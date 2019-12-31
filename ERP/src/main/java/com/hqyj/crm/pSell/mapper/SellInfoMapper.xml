@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hqyj.crm.pSell.dao.SellInfoMapper">
+	<resultMap id="BaseResultMap"
+		type="com.hqyj.crm.pSell.entity.SellInfo">
+		<id column="sell_id" jdbcType="VARCHAR" property="sellId" />
+		<result column="order_id" jdbcType="VARCHAR" property="orderId" />
+		<result column="total_money" jdbcType="DECIMAL"
+			property="totalMoney" />
+		<result column="settlement_way" jdbcType="VARCHAR"
+			property="settlementWay" />
+		<result column="handler_name" jdbcType="VARCHAR"
+			property="handlerName" />
+		<result column="operator" jdbcType="VARCHAR"
+			property="operator" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		sell_id, order_id, total_money, settlement_way, handler_name, operator, remark
+	</sql>
+
+	<!-- <select id="selectBySellId" parameterType="java.lang.String" resultType="com.hqyj.crm.pSell.entity.SellInfo">
+		select sell_id, order_id, total_money, settlement_way, handler_name,
+		operator, remark from p_sell_info where sell_id=#{sellId}
+	</select> -->
+	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from p_sell_info
+		where sell_id = #{sellId,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from p_sell_info
+		where sell_id = #{sellId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert"
+		parameterType="com.hqyj.crm.pSell.entity.SellInfo">
+		insert into p_sell_info (sell_id, order_id, total_money,
+		settlement_way, handler_name, operator,
+		remark)
+		values (#{sellId,jdbcType=VARCHAR}, #{orderId,jdbcType=VARCHAR},
+		#{totalMoney,jdbcType=DECIMAL},
+		#{settlementWay,jdbcType=VARCHAR}, #{handlerName,jdbcType=VARCHAR}, #{operator,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.hqyj.crm.pSell.entity.SellInfo">
+		insert into p_sell_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="sellId != null">
+				sell_id,
+			</if>
+			<if test="orderId != null">
+				order_id,
+			</if>
+			<if test="totalMoney != null">
+				total_money,
+			</if>
+			<if test="settlementWay != null">
+				settlement_way,
+			</if>
+			<if test="handlerName != null">
+				handler_name,
+			</if>
+			<if test="operator != null">
+				operator,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="sellId != null">
+				#{sellId,jdbcType=VARCHAR},
+			</if>
+			<if test="orderId != null">
+				#{orderId,jdbcType=VARCHAR},
+			</if>
+			<if test="totalMoney != null">
+				#{totalMoney,jdbcType=DECIMAL},
+			</if>
+			<if test="settlementWay != null">
+				#{settlementWay,jdbcType=VARCHAR},
+			</if>
+			<if test="handlerName != null">
+				#{handlerName,jdbcType=VARCHAR},
+			</if>
+			<if test="operator != null">
+				#{operator,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.hqyj.crm.pSell.entity.SellInfo">
+		update p_sell_info
+		<set>
+			<if test="orderId != null">
+				order_id = #{orderId,jdbcType=VARCHAR},
+			</if>
+			<if test="totalMoney != null">
+				total_money = #{totalMoney,jdbcType=DECIMAL},
+			</if>
+			<if test="settlementWay != null">
+				settlement_way = #{settlementWay,jdbcType=VARCHAR},
+			</if>
+			<if test="handlerName != null">
+				handler_name = #{handlerName,jdbcType=VARCHAR},
+			</if>
+			<if test="operator != null">
+				operator = #{operator,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where sell_id = #{sellId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.hqyj.crm.pSell.entity.SellInfo">
+		update p_sell_info
+		set order_id = #{orderId,jdbcType=VARCHAR},
+		total_money = #{totalMoney,jdbcType=DECIMAL},
+		settlement_way = #{settlementWay,jdbcType=VARCHAR},
+		handler_name = #{handlerName,jdbcType=VARCHAR},
+		operator = #{operator,jdbcType=VARCHAR},
+		remark = #{remark,jdbcType=VARCHAR}
+		where sell_id = #{sellId,jdbcType=VARCHAR}
+	</update>
+
+	<!-- ####################################赵丹钊 -->
+	<select id="queryAllSellInfo" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from p_sell_info
+
+	</select>
+</mapper>

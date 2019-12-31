@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hqyj.crm.production.dao.ClientMapper">
+	<sql id="client_total">
+		client_id, client_for_short, phone, linkman, email,
+		deposit_bank,client_name, address, postalcode, linkman_phone,
+		facsimile, account
+	</sql>
+	<sql id="client_info">
+		client_id, client_name, address, postalcode, linkman_phone,
+		facsimile, account
+	</sql>
+	<sql id="client">
+		client_id, client_for_short, phone, linkman, email,
+		deposit_bank
+	</sql>
+	<select id="selectAllClients"
+		resultType="com.hqyj.crm.production.entity.Client">
+		select
+		<include refid="client" />
+		from client
+	</select>
+	
+	<select id="selectClientByName" parameterType="java.lang.String" resultType="com.hqyj.crm.production.entity.Client">
+	select <include refid="client_info" />
+	from client_info where client_name=#{name}
+	</select>
+	<select id="queryAllClients"
+		resultType="com.hqyj.crm.production.entity.Client">
+		select
+		<include refid="client_info" />
+		from client_info
+	</select>
+	<select id="queryClientInfo" parameterType="java.lang.Integer"
+		resultType="com.hqyj.crm.production.entity.Client">
+		select
+		<include refid="client_info" />
+		from client_info where client_id = #{clientId,jdbcType=INTEGER}
+	</select>
+	<select id="selectClientByKeyWord"
+		parameterType="java.lang.String"
+		resultType="com.hqyj.crm.production.entity.Client">
+		select
+		<include refid="client" />
+		from client where client_for_short like #{keyWord}
+	</select>
+
+
+	<select id="selectByPrimaryKey"
+		parameterType="java.lang.Integer"
+		resultType="com.hqyj.crm.production.entity.Client">
+		select
+		c.client_id as client_id, c.client_for_short as
+		client_for_short, c.phone as phone, c.linkman as linkman, c.email as
+		email,
+		c.deposit_bank as deposit_bank,ci.client_name as client_name,
+		ci.address as address, ci.postalcode as postalcode, ci.linkman_phone
+		as linkman_phone,
+		ci.facsimile as facsimile, ci.account as account
+		from
+		client_info ci inner join client c on c.client_id=ci.client_id
+		where
+		c.client_id = #{clientId,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteClientByPrimaryKey"
+		parameterType="java.lang.Integer">
+		delete from client
+		where client_id =
+		#{clientId,jdbcType=INTEGER}
+	</delete>
+	<delete id="deleteClientInfoByPrimaryKey"
+		parameterType="java.lang.Integer">
+		delete from client_info
+		where client_id =
+		#{clientId,jdbcType=INTEGER}
+	</delete>
+	<delete id="deleteManyClientInfos"
+		parameterType="java.lang.Integer">
+		delete from client_info
+		where client_id IN
+		<foreach collection="array" item="clientId" open="("
+			separator="," close=")">
+			#{clientId,jdbcType=INTEGER}
+		</foreach>
+	</delete>
+	<delete id="deleteManyClients" parameterType="java.lang.Integer">
+		delete from client
+		where client_id IN
+		<foreach collection="array" item="clientId" open="("
+			separator="," close=")">
+			#{clientId,jdbcType=INTEGER}
+		</foreach>
+	</delete>
+
+	<insert id="insertClientSelective"
+		parameterType="com.hqyj.crm.production.entity.Client"
+		useGeneratedKeys="true" keyColumn="client_id" keyProperty="clientId">
+		insert into client
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="clientId != null">
+				client_id,
+			</if>
+			<if test="clientForShort != null">
+				client_for_short,
+			</if>
+			<if test="phone != null">
+				phone,
+			</if>
+			<if test="linkman != null">
+				linkman,
+			</if>
+			<if test="email != null">
+				email,
+			</if>
+			<if test="depositBank != null">
+				deposit_bank,
+			</if>
+
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="clientId != null">
+				#{clientId,jdbcType=INTEGER},
+			</if>
+			<if test="clientForShort != null">
+				#{clientForShort,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null">
+				#{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="linkman != null">
+				#{linkman,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				#{email,jdbcType=VARCHAR},
+			</if>
+			<if test="depositBank != null">
+				#{depositBank,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<insert id="insertClientInfoSelective"
+		parameterType="com.hqyj.crm.production.entity.Client"
+		useGeneratedKeys="true" keyColumn="client_id" keyProperty="clientId">
+		insert into client_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="clientId != null">
+				client_id,
+			</if>
+			<if test="clientName != null">
+				client_name,
+			</if>
+			<if test="address != null">
+				address,
+			</if>
+			<if test="postalcode != null">
+				postalcode,
+			</if>
+			<if test="linkmanPhone != null">
+				linkman_phone,
+			</if>
+			<if test="facsimile != null">
+				facsimile,
+			</if>
+			<if test="account != null">
+				account,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="clientId != null">
+				#{clientId,jdbcType=INTEGER},
+			</if>
+			<if test="clientName != null">
+				#{clientName,jdbcType=VARCHAR},
+			</if>
+			<if test="address != null">
+				#{address,jdbcType=VARCHAR},
+			</if>
+			<if test="postalcode != null">
+				#{postalcode,jdbcType=VARCHAR},
+			</if>
+			<if test="linkmanPhone != null">
+				#{linkmanPhone,jdbcType=VARCHAR},
+			</if>
+			<if test="facsimile != null">
+				#{facsimile,jdbcType=VARCHAR},
+			</if>
+			<if test="account != null">
+				#{account,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateClientByPrimaryKeySelective"
+		parameterType="com.hqyj.crm.production.entity.Client">
+		update client
+		<set>
+			<if test="clientName != null">
+				client_for_short= #{clientForShort,jdbcType=VARCHAR},
+			</if>
+			<if test="address != null">
+				phone = #{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="postalcode != null">
+				linkman = #{linkman,jdbcType=VARCHAR},
+			</if>
+			<if test="linkmanPhone != null">
+				email = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="facsimile != null">
+				deposit_bank = #{depositBank,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where client_id = #{clientId,jdbcType=INTEGER}
+	</update>
+	<update id="updateClientInfoByPrimaryKeySelective"
+		parameterType="com.hqyj.crm.production.entity.Client">
+		update client_info
+		<set>
+			<if test="clientName != null">
+				client_name = #{clientName,jdbcType=VARCHAR},
+			</if>
+			<if test="address != null">
+				address = #{address,jdbcType=VARCHAR},
+			</if>
+			<if test="postalcode != null">
+				postalcode = #{postalcode,jdbcType=VARCHAR},
+			</if>
+			<if test="linkmanPhone != null">
+				linkman_phone = #{linkmanPhone,jdbcType=VARCHAR},
+			</if>
+			<if test="facsimile != null">
+				facsimile = #{facsimile,jdbcType=VARCHAR},
+			</if>
+			<if test="account != null">
+				account = #{account,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where client_id = #{clientId,jdbcType=INTEGER}
+	</update>
+
+</mapper>

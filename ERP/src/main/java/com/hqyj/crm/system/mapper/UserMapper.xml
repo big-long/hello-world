@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hqyj.crm.system.dao.UserMapper">
+	<resultMap id="BaseResultMap"
+		type="com.hqyj.crm.system.entity.User">
+		<id column="user_id" jdbcType="INTEGER" property="userId" />
+		<result column="username" jdbcType="VARCHAR"
+			property="username" />
+		<result column="password" jdbcType="VARCHAR"
+			property="password" />
+		<result column="create_time" jdbcType="TIMESTAMP"
+			property="createTime" />
+		<result column="account" jdbcType="VARCHAR" property="account" />
+		<result column="locked" jdbcType="TINYINT" property="locked" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		user_id, username, password, create_time, account, locked
+	</sql>
+
+
+	<select id="queryRolesByUserId"
+		parameterType="java.lang.Integer"
+		resultType="com.hqyj.crm.system.entity.Role">
+		select r.role_id role_id,r.role_name role_name,r.name name,r.create_time
+		create_time from m_role r inner join m_user_role ur on
+		r.role_id=ur.role_id where ur.user_id=#{userId}
+	</select>
+	<select id="queryUserByUsername"
+		parameterType="java.lang.String" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from m_user
+		where username=#{username}
+	</select>
+	<select id="queryUserByUsernameAndPassword"
+		parameterType="com.hqyj.crm.system.entity.User"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from m_user
+		where username=#{username} and password=#{password}
+	</select>
+
+	<select id="selectByPrimaryKey"
+		parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from m_user
+		where user_id = #{userId,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey"
+		parameterType="java.lang.Integer">
+		delete from m_user
+		where user_id = #{userId,jdbcType=INTEGER}
+	</delete>
+	
+	<insert id="insertSelective"
+		parameterType="com.hqyj.crm.system.entity.User" useGeneratedKeys="true" keyColumn="user_id" keyProperty="userId">
+		insert into m_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userId != null">
+				user_id,
+			</if>
+			<if test="username != null">
+				username,
+			</if>
+			<if test="password != null">
+				password,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="account != null">
+				account,
+			</if>
+			<if test="locked != null">
+				locked,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userId != null">
+				#{userId,jdbcType=INTEGER},
+			</if>
+			<if test="username != null">
+				#{username,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				#{password,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="account != null">
+				#{account,jdbcType=VARCHAR},
+			</if>
+			<if test="locked != null">
+				#{locked,jdbcType=TINYINT},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.hqyj.crm.system.entity.User">
+		update m_user
+		<set>
+			<if test="username != null">
+				username = #{username,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				password = #{password,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="account != null">
+				account = #{account,jdbcType=VARCHAR},
+			</if>
+			<if test="locked != null">
+				locked = #{locked,jdbcType=TINYINT},
+			</if>
+		</set>
+		where user_id = #{userId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.hqyj.crm.system.entity.User">
+		update m_user
+		set username = #{username,jdbcType=VARCHAR},
+		password = #{password,jdbcType=VARCHAR},
+		create_time = #{createTime,jdbcType=TIMESTAMP},
+		account = #{account,jdbcType=VARCHAR},
+		locked = #{locked,jdbcType=TINYINT}
+		where user_id = #{userId,jdbcType=INTEGER}
+	</update>
+
+	<!-- ##########################赵丹钊 -->
+	<select id="queryAllUser" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from m_user
+	</select>
+	<select id="getUserDetail" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from m_user
+		where user_id = #{m_user.userId,jdbcType=INTEGER}
+	</select>
+
+	<select id="queryRoleByUserId" resultType="java.lang.String"
+		parameterType="java.lang.Integer">
+		SELECT
+		m_role.role_name
+		FROM
+		m_user
+		INNER JOIN m_user_role
+		ON m_user.user_id = m_user_role.user_id
+		INNER JOIN m_role ON
+		m_user_role.role_id = m_role.role_id
+		where m_user.user_id =
+		#{userId,jdbcType=INTEGER}
+	</select>
+
+	<!-- <delete id="deleUserBatch" parameterType="java.lang.Integer"> DELETE 
+		FROM m_user WHERE user_id IN <foreach collection="array" item="userId" open="(" 
+		separator="," close=")"> #{userId,jdbcType=INTEGER} </foreach> </delete> -->
+
+	<delete id="deleUserBatch" parameterType="java.lang.Integer">
+		DELETE FROM m_user WHERE user_id IN
+		<foreach collection="array" item="user_id" open="("
+			separator="," close=")">
+			#{user_id}
+		</foreach>
+	</delete>
+
+	<select id="queryRoleNameByUserId" resultType="java.lang.String"
+		parameterType="java.lang.Integer">
+		SELECT
+		m_role.role_name
+		FROM
+		m_user
+		INNER JOIN m_user_role
+		ON m_user.user_id = m_user_role.user_id
+		INNER JOIN m_role ON
+		m_user_role.role_id = m_role.role_id
+		where m_user.user_id =
+		#{userId,jdbcType=INTEGER}
+	</select>
+
+
+
+
+
+</mapper>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hqyj.crm.pSell.dao.SellMapper">
+  <resultMap id="BaseResultMap" type="com.hqyj.crm.pSell.entity.Sell">
+    <id column="sell_id" jdbcType="VARCHAR" property="sellId" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="sell_number" jdbcType="INTEGER" property="sellNumber" />
+    <result column="sell_date" jdbcType="TIMESTAMP" property="sellDate" />
+    <result column="sell_status" jdbcType="VARCHAR" property="sellStatus" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    sell_id, product_name, customer_name, sell_number, sell_date, sell_status, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from p_sell
+    where sell_id = #{sellId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from p_sell
+    where sell_id = #{sellId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hqyj.crm.pSell.entity.Sell">
+    insert into p_sell (sell_id, product_name, customer_name, 
+      sell_number, sell_date, sell_status, 
+      status)
+    values (#{sellId,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{customerName,jdbcType=VARCHAR}, 
+      #{sellNumber,jdbcType=INTEGER}, #{sellDate,jdbcType=TIMESTAMP}, #{sellStatus,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hqyj.crm.pSell.entity.Sell">
+    insert into p_sell
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="sellId != null">
+        sell_id,
+      </if>
+      <if test="productName != null">
+        product_name,
+      </if>
+      <if test="customerName != null">
+        customer_name,
+      </if>
+      <if test="sellNumber != null">
+        sell_number,
+      </if>
+      <if test="sellDate != null">
+        sell_date,
+      </if>
+      <if test="sellStatus != null">
+        sell_status,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="sellId != null">
+        #{sellId,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null">
+        #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="sellNumber != null">
+        #{sellNumber,jdbcType=INTEGER},
+      </if>
+      <if test="sellDate != null">
+        #{sellDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sellStatus != null">
+        #{sellStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hqyj.crm.pSell.entity.Sell">
+    update p_sell
+    <set>
+      <if test="productName != null">
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerName != null">
+        customer_name = #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="sellNumber != null">
+        sell_number = #{sellNumber,jdbcType=INTEGER},
+      </if>
+      <if test="sellDate != null">
+        sell_date = #{sellDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sellStatus != null">
+        sell_status = #{sellStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where sell_id = #{sellId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hqyj.crm.pSell.entity.Sell">
+    update p_sell
+    set product_name = #{productName,jdbcType=VARCHAR},
+      customer_name = #{customerName,jdbcType=VARCHAR},
+      sell_number = #{sellNumber,jdbcType=INTEGER},
+      sell_date = #{sellDate,jdbcType=TIMESTAMP},
+      sell_status = #{sellStatus,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR}
+    where sell_id = #{sellId,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- ####################################赵丹钊 -->
+  <select id="queryAllSell"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from p_sell
+   
+  </select>
+  
+  <delete id="deleSellBatch" parameterType="java.lang.Integer">
+	    DELETE FROM  p_sell  WHERE sell_id IN
+	    <foreach collection="array" item="sell_id" open="(" separator="," close=")">
+	        #{sell_id}
+	    </foreach>
+	</delete>
+  
+  
+</mapper>
