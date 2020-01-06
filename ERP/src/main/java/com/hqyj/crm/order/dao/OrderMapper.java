@@ -31,6 +31,8 @@ public interface OrderMapper {
 
 	/* 查询对应订单的详情 */
 	Order queryOrderInfoById(String orderId);
+
+	Order queryOrderByOrderId(String orderId);
 	
 	
 }

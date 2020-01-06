@@ -13,6 +13,7 @@ import com.hqyj.crm.baseinfo.dao.ClientMapper;
 import com.hqyj.crm.baseinfo.dao.ProductMapper;
 import com.hqyj.crm.baseinfo.entity.Client;
 import com.hqyj.crm.baseinfo.entity.Product;
+import com.hqyj.crm.common.entity.Result;
 import com.hqyj.crm.order.dao.OrderMapper;
 import com.hqyj.crm.order.entity.Order;
 import com.hqyj.crm.order.service.OrderService;
@@ -138,5 +139,11 @@ public class OrderServiceImpl implements OrderService {
 			return orderInfo;
 		}
 		return null;
+	}
+
+	@Override
+	public Result queryOrderByOrderId(String orderId) {
+		Order order=orderMapper.queryOrderByOrderId(orderId);
+		return new Result(200, "success",order);
 	}
 }

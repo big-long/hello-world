@@ -3,6 +3,7 @@ package com.hqyj.crm.order.service;
 import java.util.List;
 import java.util.Map;
 
+import com.hqyj.crm.common.entity.Result;
 import com.hqyj.crm.order.entity.Order;
 
 /**
@@ -31,5 +32,8 @@ public interface OrderService {
 
 	/* 查询对应订单的详情 */
 	Order queryOrderInfoById(String orderId);
+
+	Result queryOrderByOrderId(String orderId);
+
 
 }

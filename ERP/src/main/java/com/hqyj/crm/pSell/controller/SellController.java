@@ -9,11 +9,8 @@
 	 */
 package com.hqyj.crm.pSell.controller;
 
-import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,13 +20,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.hqyj.crm.common.entity.Result;
+import com.hqyj.crm.order.entity.Order;
+import com.hqyj.crm.order.service.OrderService;
 import com.hqyj.crm.pSell.entity.Sell;
-import com.hqyj.crm.pSell.entity.SellInfo;
-import com.hqyj.crm.pSell.service.SellInfoService;
 import com.hqyj.crm.pSell.service.SellService;
-import com.hqyj.crm.system.entity.User;
 
 
 
@@ -38,79 +33,60 @@ import com.hqyj.crm.system.entity.User;
  *
  */
 @Controller
-@RequestMapping("/PSell")
+@RequestMapping("/pSell")
 public class SellController {
 	@Autowired
 	private SellService sellService;
 	@Autowired
-	private SellInfoService sellInfoService;
+	private OrderService orderService;
 	
 	
-	@RequestMapping("/sellList")
-	public String queryAllSell(HttpServletRequest request, HttpServletResponse response,@RequestParam(required=true,defaultValue="1")Integer page) {
-		PageHelper.startPage(page,5);
-		List<Sell> sell_dbList = sellService.queryAllSell();
-		List<SellInfo> sellInfo_dbList = sellInfoService.queryAllSellInfo();
-		request.setAttribute("sell_dbList", sell_dbList);
-		request.setAttribute("sellInfo_dbList", sellInfo_dbList);
-		PageInfo<Sell> sellPage = new PageInfo<Sell>(sell_dbList);
-		request.getSession().setAttribute("sellPage", sellPage);
-		return "system/sell/sellList";
+	@RequestMapping("/list")
+	public String toPage(Model model) {
+		List<Order> orders = orderService.queryAllOrders();
+		model.addAttribute("orders", orders);
+		return "sell/sellList";
 	}
-	
-	@RequestMapping("/sellAdd")
+	@RequestMapping("/getPageInfo")
 	@ResponseBody
-	public List<Sell> addSell(Sell sell,SellInfo sellInfo,HttpServletRequest request, HttpServletResponse response){
-		int n = sellService.addSell(sell);
-//		request.setAttribute("sell_dbList", sell_dbList);
-		int m  =sellInfoService.addSellInfo(sellInfo);
-		return sellService.queryAllSell();
+	public Result queryAllSell(@RequestParam(required=true,defaultValue="1")Integer pageNum,@RequestParam(required=true,defaultValue="8")Integer pageSize) {
+		return sellService.queryAllSell(pageNum, pageSize);
 	}
 	
+	
+	@RequestMapping("/getSellId")
+	@ResponseBody
+	public Result getSellId(){
+		String sellId="S"+System.currentTimeMillis();
+		return new Result(200,"success",sellId);
+	}
+	@RequestMapping("/getOrderInfo")
+	@ResponseBody
+	public Result getOrderInfo(String orderId){
+		return orderService.queryOrderByOrderId(orderId);
+	}
+	@RequestMapping("/getSellInfo")
+	@ResponseBody
+	public Result getSellInfo(String sellId){
+		return sellService.querySellInfoBySellId(sellId);
+	}
 	@RequestMapping("/sellDelete")
-	public String deleteSell(String sellId,HttpServletRequest request, HttpServletResponse response){
-		int m = sellService.deleteSell(sellId);
-		int n = sellInfoService.deleteSell(sellId);
-		List<Sell> sell_dbList = sellService.queryAllSell();
-		request.setAttribute("sell_dbList", sell_dbList);
-		return "system/sell/sellList";
+	@ResponseBody
+	public Result deleteSell(String sellId){
+		return sellService.deleteSell(sellId);
 	}
 	
-	@RequestMapping("/sellUpdate")
+	@PostMapping("/sellUpdate")
 	@ResponseBody
-	public List<Sell> updateSell(Sell sell) {
-		int m = sellService.updateSell(sell);
-		return sellService.queryAllSell();
-	}
-	
-	@RequestMapping("/sellInfoList")
-	@ResponseBody
-	public List<SellInfo> querySellInfo() {
-		return sellInfoService.queryAllSellInfo();
-	}
-	
-	@RequestMapping("/sellInfoDetail")
-	@ResponseBody
-	public SellInfo querySellInfo(Sell sell) {
-		SellInfo sellInfo = sellInfoService.querySellInfo(sell.getSellId());
-//		request.setAttribute("sellInfo", sellInfo);
-		return sellInfo;
+	public Result updateSell(Sell sell) {
+		return sellService.updateSell(sell);
 	}
 	
 	@PostMapping("/sellDeleBatch")
 	@ResponseBody
-	public int deleSellBatch(String[] sellArray) {
-		//System.err.println(userArry[0]+"++++++++++++++++++++++");
-		//userArry[0]="111";
+	public Result deleSellBatch(String[] sellArray) {
+		
 		return sellService.sellDeleBatch(sellArray);
 	}
 	
-	@ResponseBody
-	public int getPC(HttpServletRequest request, HttpServletResponse response, HttpSession session, Model model)  {
-		String value = request.getParameter("pc");
-		if (value == null || value.trim().isEmpty()) {
-			return 1;
-		}
-		return Integer.parseInt(value);
-	}
 }

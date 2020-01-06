@@ -86,13 +86,28 @@
 
 		</ul>
 		<h2>
+			<span class="icon-pencil-square-o"></span>采购管理
+		</h2>
+		<ul>
+			<li><a href="<%=basePath%>purchase/list" target="right"><span
+					class="icon-caret-right"></span>采购单管理</a></li>
+		</ul>
+		<h2>
 			<span class="icon-pencil-square-o"></span>库存管理
 		</h2>
 		<ul>
 			<li><a href="<%=basePath%>stock/stockList" target="right"><span
+					class="icon-caret-right"></span>商品库存管理</a></li>
+			<li><a href="<%=basePath%>stock/stockList" target="right"><span
+					class="icon-caret-right"></span>采购入库管理</a></li>
+			<li><a href="<%=basePath%>stock/stockList" target="right"><span
+					class="icon-caret-right"></span>领料出库管理</a></li>
+			<li><a href="<%=basePath%>stock/stockList" target="right"><span
+					class="icon-caret-right"></span>产品库存管理</a></li>
+			<li><a href="<%=basePath%>stock/stockList" target="right"><span
 					class="icon-caret-right"></span>产品入库管理</a></li>
-			<li><a href="javascript:void(0)" target="right"><span
-					class="icon-caret-right"></span>入库订单管理</a></li>
+			<li><a href="<%=basePath%>output/list" target="right"><span
+					class="icon-caret-right"></span>销售出库管理</a></li>
 
 		</ul>
 		<h2>
@@ -111,7 +126,7 @@
 			<span class="icon-pencil-square-o"></span>销售管理
 		</h2>
 		<ul>
-			<li><a href="<%=basePath%>PSell/sellList" target="right"><span
+			<li><a href="<%=basePath%>pSell/list" target="right"><span
 					class="icon-caret-right"></span>销售单浏览</a></li>
 			<li><a href="javascript:void(0)" target="right"> <span
 					class="icon-caret-right"></span>待销售订单

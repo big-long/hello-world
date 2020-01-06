@@ -1,134 +1,202 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hqyj.crm.pSell.dao.SellMapper">
-  <resultMap id="BaseResultMap" type="com.hqyj.crm.pSell.entity.Sell">
-    <id column="sell_id" jdbcType="VARCHAR" property="sellId" />
-    <result column="product_name" jdbcType="VARCHAR" property="productName" />
-    <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
-    <result column="sell_number" jdbcType="INTEGER" property="sellNumber" />
-    <result column="sell_date" jdbcType="TIMESTAMP" property="sellDate" />
-    <result column="sell_status" jdbcType="VARCHAR" property="sellStatus" />
-    <result column="status" jdbcType="VARCHAR" property="status" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    sell_id, product_name, customer_name, sell_number, sell_date, sell_status, status
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from p_sell
-    where sell_id = #{sellId,jdbcType=VARCHAR}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from p_sell
-    where sell_id = #{sellId,jdbcType=VARCHAR}
-  </delete>
-  <insert id="insert" parameterType="com.hqyj.crm.pSell.entity.Sell">
-    insert into p_sell (sell_id, product_name, customer_name, 
-      sell_number, sell_date, sell_status, 
-      status)
-    values (#{sellId,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{customerName,jdbcType=VARCHAR}, 
-      #{sellNumber,jdbcType=INTEGER}, #{sellDate,jdbcType=TIMESTAMP}, #{sellStatus,jdbcType=VARCHAR}, 
-      #{status,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.hqyj.crm.pSell.entity.Sell">
-    insert into p_sell
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="sellId != null">
-        sell_id,
-      </if>
-      <if test="productName != null">
-        product_name,
-      </if>
-      <if test="customerName != null">
-        customer_name,
-      </if>
-      <if test="sellNumber != null">
-        sell_number,
-      </if>
-      <if test="sellDate != null">
-        sell_date,
-      </if>
-      <if test="sellStatus != null">
-        sell_status,
-      </if>
-      <if test="status != null">
-        status,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="sellId != null">
-        #{sellId,jdbcType=VARCHAR},
-      </if>
-      <if test="productName != null">
-        #{productName,jdbcType=VARCHAR},
-      </if>
-      <if test="customerName != null">
-        #{customerName,jdbcType=VARCHAR},
-      </if>
-      <if test="sellNumber != null">
-        #{sellNumber,jdbcType=INTEGER},
-      </if>
-      <if test="sellDate != null">
-        #{sellDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="sellStatus != null">
-        #{sellStatus,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hqyj.crm.pSell.entity.Sell">
-    update p_sell
-    <set>
-      <if test="productName != null">
-        product_name = #{productName,jdbcType=VARCHAR},
-      </if>
-      <if test="customerName != null">
-        customer_name = #{customerName,jdbcType=VARCHAR},
-      </if>
-      <if test="sellNumber != null">
-        sell_number = #{sellNumber,jdbcType=INTEGER},
-      </if>
-      <if test="sellDate != null">
-        sell_date = #{sellDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="sellStatus != null">
-        sell_status = #{sellStatus,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        status = #{status,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where sell_id = #{sellId,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.hqyj.crm.pSell.entity.Sell">
-    update p_sell
-    set product_name = #{productName,jdbcType=VARCHAR},
-      customer_name = #{customerName,jdbcType=VARCHAR},
-      sell_number = #{sellNumber,jdbcType=INTEGER},
-      sell_date = #{sellDate,jdbcType=TIMESTAMP},
-      sell_status = #{sellStatus,jdbcType=VARCHAR},
-      status = #{status,jdbcType=VARCHAR}
-    where sell_id = #{sellId,jdbcType=VARCHAR}
-  </update>
-  
-  <!-- ####################################赵丹钊 -->
-  <select id="queryAllSell"  resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from p_sell
-   
-  </select>
-  
-  <delete id="deleSellBatch" parameterType="java.lang.Integer">
-	    DELETE FROM  p_sell  WHERE sell_id IN
-	    <foreach collection="array" item="sell_id" open="(" separator="," close=")">
-	        #{sell_id}
-	    </foreach>
+
+	<sql id="sell">
+		ps.sell_id as sell_id,od.order_number AS sell_number,
+		ps.sell_date as sell_date, ps.sell_status AS sell_status,
+		od.order_customer AS customer_name,od.product_name as product_name
+	</sql>
+	<sql id="sell_info">
+		ps.sell_id as sell_id,od.product_name AS
+		product_name,od.order_customer AS customer_name,od.order_number AS
+		sell_number,psi.order_id AS order_id,
+		psi.settlement_way as settlement_way, psi.handler_name AS handler_name,
+		psi.operator AS operator,psi.remark AS remark,
+		oi.order_money as total_money
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+		resultType="com.hqyj.crm.pSell.entity.Sell">
+		select
+		<include refid="sell_info" />
+		from p_sell ps
+		INNER JOIN p_sell_info psi on ps.sell_id=psi.sell_id
+		INNER JOIN `order` od on od.order_id=psi.order_id
+		INNER JOIN order_info
+		oi on od.order_id=oi.order_id
+		where ps.sell_id=#{sellId}
+	</select>
+	<delete id="deleteSellByPrimaryKey"
+		parameterType="java.lang.String">
+		delete from p_sell
+		where sell_id =
+		#{sellId,jdbcType=VARCHAR}
 	</delete>
-  
-  
+	<delete id="deleteSellInfoByPrimaryKey"
+		parameterType="java.lang.String">
+		delete from p_sell_info
+		where sell_id =
+		#{sellId,jdbcType=VARCHAR}
+	</delete>
+
+	<insert id="insertSellInfoSelective"
+		parameterType="com.hqyj.crm.pSell.entity.SellInfo">
+		insert into p_sell_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="sellId != null">
+				sell_id,
+			</if>
+			<if test="orderId != null">
+				order_id,
+			</if>
+			<if test="totalMoney != null">
+				total_money,
+			</if>
+			<if test="settlementWay != null">
+				settlement_way,
+			</if>
+			<if test="handlerName != null">
+				handler_name,
+			</if>
+			<if test="operator != null">
+				operator,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="sellId != null">
+				#{sellId,jdbcType=VARCHAR},
+			</if>
+			<if test="orderId != null">
+				#{orderId,jdbcType=VARCHAR},
+			</if>
+			<if test="totalMoney != null">
+				#{totalMoney,jdbcType=DECIMAL},
+			</if>
+			<if test="settlementWay != null">
+				#{settlementWay,jdbcType=VARCHAR},
+			</if>
+			<if test="handlerName != null">
+				#{handlerName,jdbcType=VARCHAR},
+			</if>
+			<if test="operator != null">
+				#{operator,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<insert id="insertSellSelective"
+		parameterType="com.hqyj.crm.pSell.entity.Sell">
+		insert into p_sell
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="sellId != null">
+				sell_id,
+			</if>
+			<if test="sellNumber != null">
+				sell_number,
+			</if>
+			<if test="sellDate != null">
+				sell_date,
+			</if>
+			<if test="sellStatus != null">
+				sell_status,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="sellId != null">
+				#{sellId,jdbcType=VARCHAR},
+			</if>
+			<if test="sellNumber != null">
+				#{sellNumber,jdbcType=INTEGER},
+			</if>
+			<if test="sellDate != null">
+				#{sellDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="sellStatus != null">
+				#{sellStatus,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateSellSelective"
+		parameterType="com.hqyj.crm.pSell.entity.Sell">
+		update p_sell
+		<set>
+			<if test="sellNumber != null">
+				sell_number = #{sellNumber,jdbcType=INTEGER},
+			</if>
+			<if test="sellDate != null">
+				sell_date = #{sellDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="sellStatus != null">
+				sell_status = #{sellStatus,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where sell_id = #{sellId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateSellInfoSelective"
+		parameterType="com.hqyj.crm.pSell.entity.SellInfo">
+		update p_sell_info
+		<set>
+			<if test="orderId != null">
+				order_id = #{orderId,jdbcType=VARCHAR},
+			</if>
+			<if test="totalMoney != null">
+				total_money = #{totalMoney,jdbcType=DECIMAL},
+			</if>
+			<if test="settlementWay != null">
+				settlement_way = #{settlementWay,jdbcType=VARCHAR},
+			</if>
+			<if test="handlerName != null">
+				handler_name = #{handlerName,jdbcType=VARCHAR},
+			</if>
+			<if test="operator != null">
+				operator = #{operator,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where sell_id = #{sellId,jdbcType=VARCHAR}
+	</update>
+
+	<select id="queryAllSell"
+		resultType="com.hqyj.crm.pSell.entity.Sell">
+		select
+		<include refid="sell" />
+		from
+		p_sell ps
+		INNER JOIN p_sell_info psi on ps.sell_id=psi.sell_id
+		INNER
+		JOIN `order` od on od.order_id=psi.order_id
+	</select>
+
+	<delete id="deleSellBatch" parameterType="java.lang.String">
+		DELETE FROM p_sell WHERE sell_id IN
+		<foreach collection="array" item="sell_id" open="("
+			separator="," close=")">
+			#{sell_id}
+		</foreach>
+	</delete>
+	<delete id="deleSellInfoBatch" parameterType="java.lang.String">
+		DELETE FROM p_sell_info WHERE sell_id IN
+		<foreach collection="array" item="sell_id" open="("
+			separator="," close=")">
+			#{sell_id}
+		</foreach>
+	</delete>
+
+
 </mapper>

@@ -5,26 +5,23 @@ import java.util.List;
 import com.hqyj.crm.pSell.entity.Sell;
 
 public interface SellMapper {
-    int deleteByPrimaryKey(String sellId);
+    int deleteSellByPrimaryKey(String sellId);
+    
+    int deleteSellInfoByPrimaryKey(String sellId);
 
-    int insert(Sell record);
+    int insertSellInfoSelective(Sell sell);
 
-    int insertSelective(Sell record);
+    int insertSellSelective(Sell sell);
 
     Sell selectByPrimaryKey(String sellId);
 
-    int updateByPrimaryKeySelective(Sell record);
+    int updateSellSelective(Sell sell);
 
-    int updateByPrimaryKey(Sell record);
+    int updateSellInfoSelective(Sell sell);
 
-	/**
-	 * @return
-	 */
 	List<Sell> queryAllSell();
 
-	/**
-	 * @param idArray
-	 * @return
-	 */
-	int deleSellBatch(int[] idArray);
+	int deleSellBatch(String[] idArray);
+	
+	int deleSellInfoBatch(String[] idArray);
 }

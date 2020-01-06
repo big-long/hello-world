@@ -14,68 +14,93 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.hqyj.crm.common.entity.Result;
 import com.hqyj.crm.pSell.dao.SellMapper;
 import com.hqyj.crm.pSell.entity.Sell;
 import com.hqyj.crm.pSell.service.SellService;
 
-/**
- * @author ASUS
- *
- */
 @Service
-public class SellServiceImpl implements SellService{
+public class SellServiceImpl implements SellService {
 	@Autowired
 	private SellMapper sellMapper;
 
-	/* (non-Javadoc)
-	 * @see com.hqyj.crm.pSell.service.SellService#queryAllSell()
+	@Override
+	public Result queryAllSell(Integer pageNum, Integer pageSize) {
+		PageHelper.startPage(pageNum, pageSize);
+		List<Sell> sells = sellMapper.queryAllSell();
+		return new Result(200, "success", new PageInfo<Sell>(sells));
+	}
+
+	public Result deleteSell(String sellId) {
+		int n = sellMapper.deleteSellByPrimaryKey(sellId);
+		int m = sellMapper.deleteSellInfoByPrimaryKey(sellId);
+		if (m == n && n > 0) {
+			return new Result(200, "success");
+		}
+		return new Result(500, "系统异常");
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.hqyj.crm.pSell.service.SellService#updateSell(com.hqyj.crm.pSell.entity.
+	 * Sell)
 	 */
 	@Override
-	public List<Sell> queryAllSell() {
-		return sellMapper.queryAllSell();
+	public Result updateSell(Sell sell) {
+		String sellId = sell.getSellId();
+		if (sellId == null || "".equals(sellId)) {
+			return new Result(500, "销售编号为空");
+		}
+		Sell sell_db = sellMapper.selectByPrimaryKey(sellId);
+		if (sell_db == null) {
+			int n = sellMapper.insertSellInfoSelective(sell);
+			int m = sellMapper.insertSellSelective(sell);
+			if (m == n && n > 0) {
+				return new Result(200, "success");
+			}
+		} else {
+			int n = sellMapper.updateSellInfoSelective(sell);
+			int m = sellMapper.updateSellSelective(sell);
+			if (m == n && n > 0) {
+				return new Result(200, "success");
+			}
+
+		}
+		return new Result(500, "系统异常");
 	}
 
-	/* (non-Javadoc)
-	 * @see com.hqyj.crm.pSell.service.SellService#addSell(com.hqyj.crm.pSell.entity.Sell)
-	 */
-	@Override
-	public int addSell(Sell sell) {
-		return sellMapper.insertSelective(sell);
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hqyj.crm.pSell.service.SellService#deleteSell(int)
-	 */
-	public int deleteSell(String sellId) {
-		return sellMapper.deleteByPrimaryKey(sellId);
-	}
-
-	/* (non-Javadoc)
-	 * @see com.hqyj.crm.pSell.service.SellService#updateSell(com.hqyj.crm.pSell.entity.Sell)
-	 */
-	@Override
-	public int updateSell(Sell sell) {
-		return sellMapper.updateByPrimaryKeySelective(sell);
-	}
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.hqyj.crm.pSell.service.SellService#userDeleBatch(java.lang.String[])
 	 */
 	@Override
-	public int sellDeleBatch(String[] sellArray) {
-		int[] idArray = new int[sellArray.length];
-		for (int i = 0; i < sellArray.length; i++) {
-			idArray[i] = Integer.parseInt(sellArray[i]);
+	public Result sellDeleBatch(String[] sellArray) {
+		if(sellArray==null||sellArray.length==0) {
+			return new Result(500, "请至少选择一条数据");
 		}
-		// 删除中间表对应角色的数据
-
-		// 删除角色表对应的数据
-		int flag = sellMapper.deleSellBatch(idArray);
-		if (flag == 0) {
-			return 0;
+		
+		int n= sellMapper.deleSellBatch(sellArray);
+		int m= sellMapper.deleSellInfoBatch(sellArray);
+		if (m == n && n > 0) {
+			return new Result(200, "success");
 		}
-		return 1;
-	}
+		return new Result(500, "系统异常");
 	}
 
+	@Override
+	public Result querySellInfoBySellId(String sellId) {
+		Sell sell = sellMapper.selectByPrimaryKey(sellId);
+		return new Result(200, "success",sell);
+	}
 
+	@Override
+	public List<Sell> queryAllSell() {
+		// TODO Auto-generated method stub
+		return sellMapper.queryAllSell();
+	}
+}

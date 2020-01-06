@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hqyj.crm.pStock.dao.OutputMapper">
+	<resultMap id="BaseResultMap"
+		type="com.hqyj.crm.pStock.entity.Output">
+		<result column="output_id" jdbcType="VARCHAR"
+			property="outputId" />
+		<result column="output_number" jdbcType="INTEGER"
+			property="outputNumber" />
+		<result column="output_date" jdbcType="TIMESTAMP"
+			property="outputDate" />
+		<result column="sell_id" jdbcType="VARCHAR" property="sellId" />
+		<result column="hander_name" jdbcType="VARCHAR"
+			property="handerName" />
+		<result column="operator" jdbcType="VARCHAR"
+			property="operator" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+	</resultMap>
+	<sql id="output">
+		output_id,output_number,output_date,od.order_customer as
+		`client_name`,o.hander_name AS hander_name,
+		od.product_name AS product_name
+	</sql>
+	<sql id="output_total">
+		output_id,output_number,output_date,o.sell_id AS sell_id,
+		o.hander_name AS hander_name,o.operator AS operator,o.remark as
+		remark,
+		psi.order_id AS order_id,od.order_customer as `client_name`,
+		od.product_name AS product_name
+	</sql>
+	<select id="queryAllOutPuts"
+		resultType="com.hqyj.crm.pStock.entity.Output">
+		select
+		<include refid="output" />
+		from output o
+		INNER JOIN p_sell_info psi on o.sell_id=psi.sell_id
+		INNER
+		JOIN `order` od on od.order_id=psi.order_id
+	</select>
+	<select id="queryAllOutPutsByKeyWord"
+		parameterType="java.lang.String"
+		resultType="com.hqyj.crm.pStock.entity.Output">
+		select
+		<include refid="output" />
+		from output o
+		INNER JOIN p_sell_info psi on o.sell_id=psi.sell_id
+		INNER
+		JOIN `order` od on od.order_id=psi.order_id
+		where
+		od.product_name like #{keyWord}
+	</select>
+
+	<select id="queryOutputInfo" parameterType="java.lang.String"
+		resultType="com.hqyj.crm.pStock.entity.Output">
+		select
+		<include refid="output_total" />
+		from output o
+		INNER JOIN p_sell_info psi on o.sell_id=psi.sell_id
+		INNER
+		JOIN `order` od on od.order_id=psi.order_id
+		where
+		o.output_id=#{outputId}
+	</select>
+
+	<delete id="deleteManyOutput" parameterType="java.lang.String">
+		delete from output where output_id in
+		<foreach collection="array" item="outputId" open="(" close=")"
+			separator=",">
+			#{outputId}
+		</foreach>
+	</delete>
+	<delete id="deleteOutputById" parameterType="java.lang.String">
+		delete from output
+		where output_id=#{outputId}
+	</delete>
+	<update id="updateSelective"
+		parameterType="com.hqyj.crm.pStock.entity.Output">
+		update output
+		<set>
+			<if test="outputNumber != null">
+				output_number=#{outputNumber},
+			</if>
+			<if test="outputDate != null">
+				output_date=#{outputDate},
+			</if>
+			<if test="sellId != null">
+				sell_id=#{sellId},
+			</if>
+			<if test="handerName != null">
+				hander_name=#{handerName},
+			</if>
+			<if test="operator != null">
+				operator=#{operator},
+			</if>
+			<if test="remark != null">
+				remark=#{remark},
+			</if>
+		</set>
+		where output_id=#{outputId}
+	</update>
+	<insert id="insertSelective"
+		parameterType="com.hqyj.crm.pStock.entity.Output">
+		insert into output
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="outputId != null">
+				output_id,
+			</if>
+			<if test="outputNumber != null">
+				output_number,
+			</if>
+			<if test="outputDate != null">
+				output_date,
+			</if>
+			<if test="sellId != null">
+				sell_id,
+			</if>
+			<if test="handerName != null">
+				hander_name,
+			</if>
+			<if test="operator != null">
+				operator,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="outputId != null">
+				#{outputId,jdbcType=VARCHAR},
+			</if>
+			<if test="outputNumber != null">
+				#{outputNumber,jdbcType=INTEGER},
+			</if>
+			<if test="outputDate != null">
+				#{outputDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="sellId != null">
+				#{sellId,jdbcType=VARCHAR},
+			</if>
+			<if test="handerName != null">
+				#{handerName,jdbcType=VARCHAR},
+			</if>
+			<if test="operator != null">
+				#{operator,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+</mapper>
