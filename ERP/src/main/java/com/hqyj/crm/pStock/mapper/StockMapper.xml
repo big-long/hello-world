@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hqyj.crm.pStock.dao.StockMapper">
+
+	<sql id="Base_Column_List">
+		ps.*,pr.product_name,pr.produce_number AS inbill_number,pr.operator
+		AS handler_name,
+		pi.stock_number AS stock_number,pi.producer AS provider
+	</sql>
+	<select id="selectAllStock"
+		resultType="com.hqyj.crm.pStock.entity.Stock">
+		SELECT <include refid="Base_Column_List"/>
+		FROM p_stock ps
+		INNER JOIN p_regist pr on pr.production_id=ps.production_id
+		INNER JOIN product p on p.product_name=pr.product_name
+		INNER JOIN product_info pi on p.product_id=pi.product_id
+	</select>
+
+	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+		resultType="com.hqyj.crm.pStock.entity.Stock">
+		SELECT 
+		<include refid="Base_Column_List"/>
+		FROM p_stock ps
+		INNER JOIN p_regist pr on pr.production_id=ps.production_id
+		INNER JOIN product p on p.product_name=pr.product_name
+		INNER JOIN product_info pi on p.product_id=pi.product_id
+		where ps.inbill_id = #{inbillId,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from p_stock
+		where inbill_id = #{inbillId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insertSelective"
+		parameterType="com.hqyj.crm.pStock.entity.Stock">
+		insert into p_stock
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="inbillId != null">
+				inbill_id,
+			</if>
+			<if test="operator != null">
+				operator,
+			</if>
+			<if test="productionId != null">
+				production_id,
+			</if>
+			<if test="inbillDate != null">
+				inbill_date,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="inbillId != null">
+				#{inbillId,jdbcType=VARCHAR},
+			</if>
+			<if test="operator != null">
+				#{operator,jdbcType=VARCHAR},
+			</if>
+			<if test="productionId != null">
+				#{productionId,jdbcType=VARCHAR},
+			</if>
+			<if test="inbillDate != null">
+				#{inbillDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.hqyj.crm.pStock.entity.Stock">
+		update p_stock
+		<set>
+			<if test="operator != null">
+				operator = #{operator,jdbcType=VARCHAR},
+			</if>
+			<if test="productionId != null">
+				production_id = #{productionId,jdbcType=VARCHAR},
+			</if>
+			<if test="inbillDate != null">
+				inbill_date = #{inbillDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where inbill_id = #{inbillId,jdbcType=VARCHAR}
+	</update>
+</mapper>

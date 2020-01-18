@@ -111,4 +111,9 @@ public class PurchaseServiceImpl implements PurchaseService {
 		List<Purchase> purchases=purchaseMapper.selectPageInfoByKeyWord(keyWord);
 		return new Result(200, "success",new PageInfo<Purchase>(purchases));
 	}
+
+	@Override
+	public List<Purchase> queryAllPurchase() {
+		return purchaseMapper.selectAllPurchases();
+	}
 }

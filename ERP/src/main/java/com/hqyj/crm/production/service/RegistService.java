@@ -1,5 +1,7 @@
 package com.hqyj.crm.production.service;
 
+import java.util.List;
+
 import com.hqyj.crm.common.entity.Result;
 import com.hqyj.crm.production.entity.Regist;
 
@@ -16,5 +18,7 @@ public interface RegistService {
 	Result deleteRegist(String productionId);
 
 	Result deleteManyRegist(String[] id_arr);
+
+	List<Regist> queryAllRegist();
 
 }

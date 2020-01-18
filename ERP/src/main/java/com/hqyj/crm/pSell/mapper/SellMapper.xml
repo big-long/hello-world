@@ -13,7 +13,7 @@
 		sell_number,psi.order_id AS order_id,
 		psi.settlement_way as settlement_way, psi.handler_name AS handler_name,
 		psi.operator AS operator,psi.remark AS remark,
-		oi.order_money as total_money
+		oi.order_money as total_money,pi.stock_number AS stock_number
 	</sql>
 	<select id="selectByPrimaryKey" parameterType="java.lang.String"
 		resultType="com.hqyj.crm.pSell.entity.Sell">
@@ -24,6 +24,8 @@
 		INNER JOIN `order` od on od.order_id=psi.order_id
 		INNER JOIN order_info
 		oi on od.order_id=oi.order_id
+		INNER JOIN product p on p.product_name=od.product_name
+		INNER JOIN product_info pi on p.product_id=pi.product_id
 		where ps.sell_id=#{sellId}
 	</select>
 	<delete id="deleteSellByPrimaryKey"
@@ -40,7 +42,7 @@
 	</delete>
 
 	<insert id="insertSellInfoSelective"
-		parameterType="com.hqyj.crm.pSell.entity.SellInfo">
+		parameterType="com.hqyj.crm.pSell.entity.Sell">
 		insert into p_sell_info
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="sellId != null">
@@ -147,7 +149,7 @@
 		where sell_id = #{sellId,jdbcType=VARCHAR}
 	</update>
 	<update id="updateSellInfoSelective"
-		parameterType="com.hqyj.crm.pSell.entity.SellInfo">
+		parameterType="com.hqyj.crm.pSell.entity.Sell">
 		update p_sell_info
 		<set>
 			<if test="orderId != null">

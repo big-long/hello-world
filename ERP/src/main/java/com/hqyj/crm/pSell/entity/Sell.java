@@ -34,8 +34,19 @@ public class Sell {
     private String operator;
 
     private String remark;
+    
+    private Integer stockNumber;
+    
 
-    public String getSellId() {
+    public Integer getStockNumber() {
+		return stockNumber;
+	}
+
+	public void setStockNumber(Integer stockNumber) {
+		this.stockNumber = stockNumber;
+	}
+
+	public String getSellId() {
         return sellId;
     }
 

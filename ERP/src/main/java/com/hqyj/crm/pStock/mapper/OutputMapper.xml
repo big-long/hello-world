@@ -26,7 +26,7 @@
 		o.hander_name AS hander_name,o.operator AS operator,o.remark as
 		remark,
 		psi.order_id AS order_id,od.order_customer as `client_name`,
-		od.product_name AS product_name
+		od.product_name AS product_name,pi.stock_number AS stock_number
 	</sql>
 	<select id="queryAllOutPuts"
 		resultType="com.hqyj.crm.pStock.entity.Output">
@@ -34,8 +34,8 @@
 		<include refid="output" />
 		from output o
 		INNER JOIN p_sell_info psi on o.sell_id=psi.sell_id
-		INNER
-		JOIN `order` od on od.order_id=psi.order_id
+		INNER JOIN `order` od on od.order_id=psi.order_id
+		
 	</select>
 	<select id="queryAllOutPutsByKeyWord"
 		parameterType="java.lang.String"
@@ -58,6 +58,8 @@
 		INNER JOIN p_sell_info psi on o.sell_id=psi.sell_id
 		INNER
 		JOIN `order` od on od.order_id=psi.order_id
+		INNER JOIN product p on p.product_name=od.product_name
+		INNER JOIN product_info pi on p.product_id=pi.product_id
 		where
 		o.output_id=#{outputId}
 	</select>

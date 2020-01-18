@@ -96,15 +96,15 @@
 			<span class="icon-pencil-square-o"></span>库存管理
 		</h2>
 		<ul>
-			<li><a href="<%=basePath%>stock/stockList" target="right"><span
+			<li><a href="<%=basePath%>goodsStock/list" target="right"><span
 					class="icon-caret-right"></span>商品库存管理</a></li>
-			<li><a href="<%=basePath%>stock/stockList" target="right"><span
+			<li><a href="<%=basePath%>goodsStock/gStockList" target="right"><span
 					class="icon-caret-right"></span>采购入库管理</a></li>
-			<li><a href="<%=basePath%>stock/stockList" target="right"><span
+			<li><a href="<%=basePath%>goodsStock/pickoutList" target="right"><span
 					class="icon-caret-right"></span>领料出库管理</a></li>
-			<li><a href="<%=basePath%>stock/stockList" target="right"><span
+			<li><a href="<%=basePath%>proStock/list" target="right"><span
 					class="icon-caret-right"></span>产品库存管理</a></li>
-			<li><a href="<%=basePath%>stock/stockList" target="right"><span
+			<li><a href="<%=basePath%>stock/list" target="right"><span
 					class="icon-caret-right"></span>产品入库管理</a></li>
 			<li><a href="<%=basePath%>output/list" target="right"><span
 					class="icon-caret-right"></span>销售出库管理</a></li>

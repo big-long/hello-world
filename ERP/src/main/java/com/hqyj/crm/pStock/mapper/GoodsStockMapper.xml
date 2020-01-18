@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hqyj.crm.pStock.dao.GoodsStockMapper">
+  
+  <sql id="Base_Column_List">
+  goods_name,price,stock_number,provider,category
+  </sql>
+  <select id="selectAll"  resultType="com.hqyj.crm.pStock.entity.GoodsStock">
+    select 
+    <include refid="Base_Column_List" />
+    from goods g inner join goods_info gi on g.goods_id=gi.goods_id
+  </select>
+</mapper>

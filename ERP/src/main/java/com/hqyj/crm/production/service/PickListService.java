@@ -1,5 +1,7 @@
 package com.hqyj.crm.production.service;
 
+import java.util.List;
+
 import com.hqyj.crm.common.entity.Result;
 import com.hqyj.crm.production.entity.PickList;
 
@@ -16,5 +18,7 @@ public interface PickListService {
 	Result deleteManyPicklist(String[] id_arr);
 
 	Result queryPicklistByKeyWord(String keyWord, Integer pageNum, Integer pageSize);
+
+	List<PickList> queryAllPickouts();
 
 }

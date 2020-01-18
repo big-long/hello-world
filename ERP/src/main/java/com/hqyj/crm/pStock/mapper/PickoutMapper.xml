@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hqyj.crm.pStock.dao.PickoutMapper">
+	<resultMap id="BaseResultMap"
+		type="com.hqyj.crm.pStock.entity.Pickout">
+		<result column="pickout_id" jdbcType="VARCHAR"
+			property="pickoutId" />
+		<result column="pickout_number" jdbcType="INTEGER"
+			property="pickoutNumber" />
+		<result column="pickout_date" jdbcType="TIMESTAMP"
+			property="pickoutDate" />
+		<result column="sell_id" jdbcType="VARCHAR" property="sellId" />
+		<result column="hander_name" jdbcType="VARCHAR"
+			property="handerName" />
+		<result column="operator" jdbcType="VARCHAR"
+			property="operator" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+	</resultMap>
+	<sql id="pickout">
+		pickout_id,p.pick_number AS
+		pick_number,pickout_date,pl.goods_name AS goods_name,gi.provider
+		AS
+		provider,pl.pl_man AS handler_name
+	</sql>
+	<sql id="pickout_total">
+		pickout_id,pickout_number,pickout_date,o.sell_id AS
+		sell_id,
+		o.hander_name AS hander_name,o.operator AS operator,o.remark
+		as
+		remark,
+		psi.order_id AS order_id,od.order_customer as `client_name`,
+		od.product_name AS product_name,pi.stock_number AS stock_number
+	</sql>
+	<select id="selectPickoutInfoByPickoutId"
+		parameterType="java.lang.String"
+		resultType="com.hqyj.crm.pStock.entity.Pickout">
+		select p.pl_id AS pl_id,p.operator AS
+		operator,p.handler_name AS handler_name,gi.stock_number AS
+		stock_number,p.remark AS remark from
+		pickout p inner join picking_list pl on pl.pl_id=p.pl_id 
+		INNER JOIN goods g on
+		g.goods_name=pl.goods_name
+		INNER
+		JOIN goods_info gi on
+		gi.goods_id=g.goods_id
+		where p.pickout_id=#{pickoutId}
+	</select>
+	<select id="selectPickoutInfoByPlId"
+		parameterType="java.lang.String"
+		resultType="com.hqyj.crm.pStock.entity.Pickout">
+		select pl.goods_name AS goods_name,gi.provider AS
+		provider,pl.pl_man AS handler_name,gi.stock_number AS
+		stock_number,pl.pick_number AS pick_number from
+		picking_list pl INNER JOIN goods g on
+		g.goods_name=pl.goods_name
+		INNER
+		JOIN goods_info gi on
+		gi.goods_id=g.goods_id
+		where pl.pl_id=#{plId}
+	</select>
+	<select id="queryAllOutPuts"
+		resultType="com.hqyj.crm.pStock.entity.Pickout">
+		select
+		<include refid="pickout" />
+		from pickout p
+		INNER JOIN
+		picking_list pl on p.pl_id=pl.pl_id
+		INNER JOIN
+		goods g on g.goods_name=pl.goods_name
+		INNER JOIN goods_info gi on
+		gi.goods_id=g.goods_id
+	</select>
+	<select id="queryAllOutPutsByKeyWord"
+		parameterType="java.lang.String"
+		resultType="com.hqyj.crm.pStock.entity.Pickout">
+		select
+		<include refid="pickout" />
+		from pickout o
+		INNER JOIN p_sell_info psi on o.sell_id=psi.sell_id
+		INNER
+		JOIN `order` od on od.order_id=psi.order_id
+		where
+		od.product_name
+		like #{keyWord}
+	</select>
+
+	<select id="queryPickoutInfo" parameterType="java.lang.String"
+		resultType="com.hqyj.crm.pStock.entity.Pickout">
+		select
+		<include refid="pickout" />
+		from pickout p
+		INNER JOIN
+		picking_list pl on p.pl_id=pl.pl_id
+		INNER JOIN
+		goods g on g.goods_name=pl.goods_name
+		INNER JOIN goods_info gi on
+		gi.goods_id=g.goods_id
+		where
+		p.pickout_id=#{pickoutId}
+	</select>
+
+	<delete id="deleteManyPickout" parameterType="java.lang.String">
+		delete from pickout where pickout_id in
+		<foreach collection="array" item="pickoutId" open="("
+			close=")" separator=",">
+			#{pickoutId}
+		</foreach>
+	</delete>
+	<delete id="deletePickoutById" parameterType="java.lang.String">
+		delete from pickout
+		where pickout_id=#{pickoutId}
+	</delete>
+	<update id="updateSelective"
+		parameterType="com.hqyj.crm.pStock.entity.Pickout">
+		update pickout
+		<set>
+			<if test="pickNumber != null">
+				pick_number=#{pickNumber},
+			</if>
+			<if test="pickoutDate != null">
+				pickout_date=#{pickoutDate},
+			</if>
+			<if test="plId != null">
+				pl_id=#{plId},
+			</if>
+			<if test="handlerName != null">
+				handler_name=#{handlerName},
+			</if>
+			<if test="operator != null">
+				operator=#{operator},
+			</if>
+			<if test="remark != null">
+				remark=#{remark},
+			</if>
+		</set>
+		where pickout_id=#{pickoutId}
+	</update>
+	<insert id="insertSelective"
+		parameterType="com.hqyj.crm.pStock.entity.Pickout">
+		insert into pickout
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="pickoutId != null and pickoutId!=''">
+				pickout_id,
+			</if>
+			<if test="pickNumber != null and pickNumber!=''">
+				pick_number,
+			</if>
+			<if test="pickoutDate != null">
+				pickout_date,
+			</if>
+			<if test="plId != null and plId!=''">
+				pl_id,
+			</if>
+			<if test="handlerName != null and handlerName!=''">
+				handler_name,
+			</if>
+			<if test="operator != null and operator!=''">
+				operator,
+			</if>
+			<if test="remark != null and remark!=''">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="pickoutId != null and pickoutId!=''">
+				#{pickoutId,jdbcType=VARCHAR},
+			</if>
+			<if test="pickNumber != null and pickNumber!=''">
+				#{pickNumber,jdbcType=INTEGER},
+			</if>
+			<if test="pickoutDate != null">
+				#{pickoutDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="plId != null and plId!=''">
+				#{plId,jdbcType=VARCHAR},
+			</if>
+			<if test="handlerName != null and handlerName!=''">
+				#{handlerName,jdbcType=VARCHAR},
+			</if>
+			<if test="operator != null and operator!=''">
+				#{operator,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null and remark!=''">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+</mapper>

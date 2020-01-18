@@ -2,56 +2,45 @@ function refush() {
 	var keyWord = $("[name=keyword]").val();
 	var pageNum = $("#ck").text();
 	var pageSize = $(".form-control").val();
-	$.ajax({
-		url : "http://localhost:8080/ERP/output/getOutputByKeyWord",
-		type : "get",
-		data : {
-			keyWord : keyWord,
-			pageNum : pageNum,
-			pageSize : pageSize
-		},
-		success : function(result) {
-			if (result.status == 200) {
-				loadPage(result.object);
-			} else {
-				alert(result.message);
-			}
-		},
-		error : function(result) {
-			alert(result.message);
-		}
-	})
+	gotoPage(pageNum, pageSize);
+	/*
+	 * $.ajax({ url :
+	 * "http://localhost:8080/ERP/goodsStock/getPickoutByKeyWord", type : "get",
+	 * data : { keyWord : keyWord, pageNum : pageNum, pageSize : pageSize },
+	 * success : function(result) { if (result.status == 200) {
+	 * loadPage(result.object); } else { alert(result.message); } }, error :
+	 * function(result) { alert(result.message); } })
+	 */
 }
 // 修改用户模态框准备数据
 function update(obj) {
-	var outputId = $(obj).parents("tr").find("#outputId").text();
-	var productName = $(obj).parents("tr").find("#productName").text();
-	var outputNumber = $(obj).parents("tr").find("#outputNumber").text();
-	var outputDate = $(obj).parents("tr").find("#outputDate").text();
-	var clientName = $(obj).parents("tr").find("#clientName").text();
+	var pickoutId = $(obj).parents("tr").find("#pickoutId").text();
+	var goodsName = $(obj).parents("tr").find("#goodsName").text();
+	var pickNumber = $(obj).parents("tr").find("#pickNumber").text();
+	var pickoutDate = $(obj).parents("tr").find("#pickoutDate").text();
+	var provider = $(obj).parents("tr").find("#provider").text();
 
 	$.ajax({
-		url : "http://localhost:8080/ERP/output/getOutputInfo",
+		url : "http://localhost:8080/ERP/goodsStock/getPickoutInfo",
 		type : "get",
 		data : {
-			outputId : outputId
+			pickoutId : pickoutId
 		},
 		success : function(result) {
 			if (result.status == 200) {
-				var output = result.object;
+				var pickout = result.object;
 				$("h4").text("修改出库单");
-				$("[name=clientName]").val(clientName);
-				$("[name=outputId]").val(outputId);
-				$("[name=productName]").val(productName);
-				$("[name=outputNumber]").val(outputNumber);
-				$("[name=outputDate]").val(outputDate);
+				$("[name=provider]").val(provider);
+				$("[name=pickoutId]").val(pickoutId);
+				$("[name=goodsName]").val(goodsName);
+				$("[name=pickNumber]").val(pickNumber);
+				$("[name=pickoutDate]").val(pickoutDate);
 
-				$("[name=sellId]").val(output.sellId);
-				$("[name=orderId]").val(output.orderId);
-				$("[name=stockNumber]").val(output.stockNumber);
-				$("[name=handlerName]").val(output.handerName);
-				$("[name=operator]").val(output.operator);
-				$("[name=remark]").val(output.remark);
+				$("[name=plId]").val(pickout.plId);
+				$("[name=stockNumber]").val(pickout.stockNumber);
+				$("[name=handlerName]").val(pickout.handlerName);
+				$("[name=operator]").val(pickout.operator);
+				$("[name=remark]").val(pickout.remark);
 			} else {
 				alert(result.message);
 			}
@@ -72,18 +61,18 @@ function loadPage(result) {
 	for (var i = 0; i < data.length; i++) {
 		html += "<tr><td ><input type='checkbox' onchange='remove(this)' name='id[]'/>"
 				+ (i + 1 + result.pageSize * (result.pageNum - 1)) + "</td>";
-		html += "<td id='outputId' >" + data[i].outputId + "</td>";
-		html += "<td id='productName' >" + data[i].productName + "</td>";
-		html += "<td id='clientName' >" + data[i].clientName + "</td>";
-		html += "<td id='outputNumber' >" + data[i].outputNumber + "</td>";
-		html += "<td id='outputDate' >" + data[i].outputDate + "</td>";
-		html += "<td id='handlerName' >" + data[i].handerName + "</td>";
-		html += "<td ><div><button type='button' outputId='"
-				+ data[i].outputId
-				+ "' class='button border-main border-little icon-plus-square-o' data-toggle='modal' data-target='#addOutput'onclick='update(this)' >修改</button>";
+		html += "<td id='pickoutId' >" + data[i].pickoutId + "</td>";
+		html += "<td id='goodsName' >" + data[i].goodsName + "</td>";
+		html += "<td id='provider' >" + data[i].provider + "</td>";
+		html += "<td id='pickNumber' >" + data[i].pickNumber + "</td>";
+		html += "<td id='pickoutDate' >" + data[i].pickoutDate + "</td>";
+		html += "<td id='handlerName' >" + data[i].handlerName + "</td>";
+		html += "<td ><div><button type='button' pickoutId='"
+				+ data[i].pickoutId
+				+ "' class='button border-main border-little icon-plus-square-o' data-toggle='modal' data-target='#modal' onclick='update(this)' >修改</button>";
 		html += "<button type='button' class='button border-red button-little' onclick='del(this)'> <span class='icon-trash-o'></span> 删除 </button> </div></td> </tr>";
 	}
-	$("#outputList").html(html);
+	$("#list").html(html);
 	html = "";
 	html += "总共"
 			+ result.pages
@@ -183,13 +172,13 @@ function loadPage(result) {
 }
 // 删除指定客户
 function del(obj) {
-	var outputId = $(obj).parents("tr").find("#outputId").text();
+	var pickoutId = $(obj).parents("tr").find("#pickoutId").text();
 	if (confirm("您确定要删除吗?")) {
 		$.ajax({
-			url : "http://localhost:8080/ERP/output/delete",
+			url : "http://localhost:8080/ERP/goodsStock/deletePickout",
 			type : "get",
 			data : {
-				outputId : outputId
+				pickoutId : pickoutId
 			},
 			success : function(result) {
 				if (result.status == 200) {
@@ -209,7 +198,7 @@ function del(obj) {
 // 跳转到指定页面
 function gotoPage(pageNum, pageSize) {
 	$.ajax({
-		url : "http://localhost:8080/ERP/output/getPageInfo",
+		url : "http://localhost:8080/ERP/goodsStock/getPickoutPageInfo",
 		type : "get",
 		data : {
 			pageNum : pageNum,
@@ -230,33 +219,35 @@ function gotoPage(pageNum, pageSize) {
 }
 // 增加/修改客户信息，将信息发送到后台
 function pushData() {
-	// var t=$("[name=outputName]").val();
+	// var t=$("[name=pickoutName]").val();
 	var obj = $(".check-error");
 	if (obj.length != 0) {
 		return;
 	}
-	var outputId = $("[name=outputId]").val();
-	var sellId = $("[name=sellId]").val();
+	var pickoutId = $("[name=pickoutId]").val();
+	var goodsName = $("[name=goodsName]").val();
+	var plId = $("[name=plId]").val();
 	var handlerName = $("[name=handlerName]").val();
-	var outputNumber = $("[name=outputNumber]").val();
+	var pickNumber = $("[name=pickNumber]").val();
 	var operator = $("[name=operator]").val();
-	var outputDate = $("[name=outputDate]").val();
+	var pickoutDate = $("[name=pickoutDate]").val();
 	var remark = $("[name=remark]").val();
 	$.ajax({
-		url : "http://localhost:8080/ERP/output/update",
+		url : "http://localhost:8080/ERP/goodsStock/updatePickout",
 		type : "post",
 		data : {
-			outputId : outputId,
-			sellId : sellId,
-			handerName : handlerName,
-			outputNumber : outputNumber,
+			pickoutId : pickoutId,
+			goodsName : goodsName,
+			plId : plId,
+			handlerName : handlerName,
+			pickNumber : pickNumber,
 			operator : operator,
-			outputDate : outputDate,
+			pickoutDate : pickoutDate,
 			remark : remark
 		},
 		success : function(result) {
 			if (result.status == 200) {
-				$('#addOutput').modal('hide');
+				$('#modal').modal('hide');
 				refush();
 			} else {
 				alert(result.message);
@@ -289,7 +280,7 @@ function delSelect() {
 	}
 	if (confirm("您确定要删除吗?")) {
 		$.ajax({
-			url : "http://localhost:8080/ERP/output/deleteMany",
+			url : "http://localhost:8080/ERP/goodsStock/deleteMany",
 			data : {
 				id_arr : id_arr
 			},
@@ -327,21 +318,20 @@ $(function() {
 
 		$("h4").text("添加新出库单");
 
-		$("[name=productName]").val("");
-		$("[name=outputNumber]").val("");
-		$("[name=outputDate]").val("");
-		$("[name=orderId]").val("");
+		$("[name=goodsName]").val("");
+		$("[name=pickNumber]").val("");
+		$("[name=pickoutDate]").val("");
 		$("[name=clientName]").val("");
-		$("[name=sellId]").val("");
+		$("[name=plId]").val("");
 		$("[name=stockNumber]").val("");
 		$("[name=handlerName]").val("");
 		$("[name=remark]").val("");
 		$.ajax({
-			url : "http://localhost:8080/ERP/output/generateOutputId",
+			url : "http://localhost:8080/ERP/goodsStock/generatePickoutId",
 			type : "get",
 			success : function(result) {
 				if (result.status == 200) {
-					$("[name=outputId]").val(result.object);
+					$("[name=pickoutId]").val(result.object);
 				} else {
 					alert(result.message);
 				}
@@ -363,36 +353,36 @@ $(function() {
 			}
 		});
 	})
-	$("#addOutput").on("hide.bs.modal", function() {
+	$("#modal").on("hide.bs.modal", function() {
 		$(".field").each(function() {
 			$(this).removeClass("check-error");
 			$(this).removeClass("check-success");
 			$(this).find(".input-help").remove();
 		})
 	})
-	$("[name=outputDate]").datetimepicker({
+	$("[name=pickoutDate]").datetimepicker({
 		format : 'YYYY-MM-DD hh:mm:ss',
 		locale : moment.locale('zh-cn')
 	});
-	$("[name=sellId]").bind("change", function() {
-		var sellId = $(this).val();
-		if (sellId == "") {
+	$("[name=plId]").bind("change", function() {
+		var plId = $(this).val();
+		if (plId == "") {
 			return;
 		}
 		$.ajax({
-			url : "http://localhost:8080/ERP/output/getSellInfo",
+			url : "http://localhost:8080/ERP/goodsStock/getPickListInfo",
 			type : "get",
 			data : {
-				sellId : sellId
+				plId : plId
 			},
 			success : function(result) {
 				if (result.status == 200) {
-					var output = result.object;
-					$("[name=orderId]").val(output.orderId);
-					$("[name=productName]").val(output.productName);
-					$("[name=clientName]").val(output.customerName);
-					$("[name=stockNumber]").val(output.stockNumber);
-					$("[name=outputNumber]").val(output.sellNumber);
+					var pickout = result.object;
+					$("[name=goodsName]").val(pickout.goodsName);
+					$("[name=provider]").val(pickout.provider);
+					$("[name=stockNumber]").val(pickout.stockNumber);
+					$("[name=pickNumber]").val(pickout.pickNumber);
+					$("[name=handlerName]").val(pickout.handlerName);
 				} else {
 					alert(result.message);
 				}

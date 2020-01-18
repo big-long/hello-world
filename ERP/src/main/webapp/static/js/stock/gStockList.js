@@ -2,56 +2,44 @@ function refush() {
 	var keyWord = $("[name=keyword]").val();
 	var pageNum = $("#ck").text();
 	var pageSize = $(".form-control").val();
-	$.ajax({
-		url : "http://localhost:8080/ERP/output/getOutputByKeyWord",
-		type : "get",
-		data : {
-			keyWord : keyWord,
-			pageNum : pageNum,
-			pageSize : pageSize
-		},
-		success : function(result) {
-			if (result.status == 200) {
-				loadPage(result.object);
-			} else {
-				alert(result.message);
-			}
-		},
-		error : function(result) {
-			alert(result.message);
-		}
-	})
+	gotoPage(pageNum, pageSize);
+	/*
+	 * $.ajax({ url : "http://localhost:8080/ERP/goodsStock/getOutputByKeyWord",
+	 * type : "get", data : { keyWord : keyWord, pageNum : pageNum, pageSize :
+	 * pageSize }, success : function(result) { if (result.status == 200) {
+	 * loadPage(result.object); } else { alert(result.message); } }, error :
+	 * function(result) { alert(result.message); } })
+	 */
 }
 // 修改用户模态框准备数据
 function update(obj) {
-	var outputId = $(obj).parents("tr").find("#outputId").text();
-	var productName = $(obj).parents("tr").find("#productName").text();
-	var outputNumber = $(obj).parents("tr").find("#outputNumber").text();
-	var outputDate = $(obj).parents("tr").find("#outputDate").text();
-	var clientName = $(obj).parents("tr").find("#clientName").text();
+	var gStockId = $(obj).parents("tr").find("#gStockId").text();
+	var goodsName = $(obj).parents("tr").find("#goodsName").text();
+	var purchaseNumber = $(obj).parents("tr").find("#purchaseNumber").text();
+	var stockDate = $(obj).parents("tr").find("#stockDate").text();
+	var provider = $(obj).parents("tr").find("#provider").text();
 
 	$.ajax({
-		url : "http://localhost:8080/ERP/output/getOutputInfo",
+		url : "http://localhost:8080/ERP/goodsStock/getStockInfo",
 		type : "get",
 		data : {
-			outputId : outputId
+			gStockId : gStockId
 		},
 		success : function(result) {
 			if (result.status == 200) {
-				var output = result.object;
-				$("h4").text("修改出库单");
-				$("[name=clientName]").val(clientName);
-				$("[name=outputId]").val(outputId);
-				$("[name=productName]").val(productName);
-				$("[name=outputNumber]").val(outputNumber);
-				$("[name=outputDate]").val(outputDate);
+				var gStock = result.object;
+				$("h4").text("修改产品入库单");
+				$("[name=provider]").val(provider);
+				$("[name=gStockId]").val(gStockId);
+				$("[name=goodsName]").val(goodsName);
+				$("[name=purchaseNumber]").val(purchaseNumber);
+				$("[name=stockDate]").val(stockDate);
 
-				$("[name=sellId]").val(output.sellId);
-				$("[name=orderId]").val(output.orderId);
-				$("[name=stockNumber]").val(output.stockNumber);
-				$("[name=handlerName]").val(output.handerName);
-				$("[name=operator]").val(output.operator);
-				$("[name=remark]").val(output.remark);
+				$("[name=purchaseId]").val(gStock.purchaseId);
+				$("[name=stockNumber]").val(gStock.stockNumber);
+				$("[name=handlerName]").val(gStock.handlerName);
+				$("[name=operator]").val(gStock.operator);
+				$("[name=remark]").val(gStock.remark);
 			} else {
 				alert(result.message);
 			}
@@ -72,18 +60,18 @@ function loadPage(result) {
 	for (var i = 0; i < data.length; i++) {
 		html += "<tr><td ><input type='checkbox' onchange='remove(this)' name='id[]'/>"
 				+ (i + 1 + result.pageSize * (result.pageNum - 1)) + "</td>";
-		html += "<td id='outputId' >" + data[i].outputId + "</td>";
-		html += "<td id='productName' >" + data[i].productName + "</td>";
-		html += "<td id='clientName' >" + data[i].clientName + "</td>";
-		html += "<td id='outputNumber' >" + data[i].outputNumber + "</td>";
-		html += "<td id='outputDate' >" + data[i].outputDate + "</td>";
-		html += "<td id='handlerName' >" + data[i].handerName + "</td>";
-		html += "<td ><div><button type='button' outputId='"
-				+ data[i].outputId
-				+ "' class='button border-main border-little icon-plus-square-o' data-toggle='modal' data-target='#addOutput'onclick='update(this)' >修改</button>";
+		html += "<td id='gStockId' >" + data[i].gStockId + "</td>";
+		html += "<td id='goodsName' >" + data[i].goodsName + "</td>";
+		html += "<td id='provider' >" + data[i].provider + "</td>";
+		html += "<td id='purchaseNumber' >" + data[i].purchaseNumber + "</td>";
+		html += "<td id='stockDate' >" + data[i].stockDate + "</td>";
+		html += "<td id='handlerName' >" + data[i].handlerName + "</td>";
+		html += "<td ><div><button type='button' gStockId='"
+				+ data[i].gStockId
+				+ "' class='button border-main border-little icon-plus-square-o' data-toggle='modal' data-target='#modal' onclick='update(this)' >修改</button>";
 		html += "<button type='button' class='button border-red button-little' onclick='del(this)'> <span class='icon-trash-o'></span> 删除 </button> </div></td> </tr>";
 	}
-	$("#outputList").html(html);
+	$("#list").html(html);
 	html = "";
 	html += "总共"
 			+ result.pages
@@ -183,13 +171,13 @@ function loadPage(result) {
 }
 // 删除指定客户
 function del(obj) {
-	var outputId = $(obj).parents("tr").find("#outputId").text();
+	var gStockId = $(obj).parents("tr").find("#gStockId").text();
 	if (confirm("您确定要删除吗?")) {
 		$.ajax({
-			url : "http://localhost:8080/ERP/output/delete",
+			url : "http://localhost:8080/ERP/goodsStock/delete",
 			type : "get",
 			data : {
-				outputId : outputId
+				gStockId : gStockId
 			},
 			success : function(result) {
 				if (result.status == 200) {
@@ -209,7 +197,7 @@ function del(obj) {
 // 跳转到指定页面
 function gotoPage(pageNum, pageSize) {
 	$.ajax({
-		url : "http://localhost:8080/ERP/output/getPageInfo",
+		url : "http://localhost:8080/ERP/goodsStock/getGStockPageInfo",
 		type : "get",
 		data : {
 			pageNum : pageNum,
@@ -230,33 +218,35 @@ function gotoPage(pageNum, pageSize) {
 }
 // 增加/修改客户信息，将信息发送到后台
 function pushData() {
-	// var t=$("[name=outputName]").val();
+	// var t=$("[name=inbillName]").val();
 	var obj = $(".check-error");
 	if (obj.length != 0) {
 		return;
 	}
-	var outputId = $("[name=outputId]").val();
-	var sellId = $("[name=sellId]").val();
-	var handlerName = $("[name=handlerName]").val();
-	var outputNumber = $("[name=outputNumber]").val();
+	var gStockId = $("[name=gStockId]").val();
+	var purchaseId = $("[name=purchaseId]").val();
+	var goodsName = $("[name=goodsName]").val();
 	var operator = $("[name=operator]").val();
-	var outputDate = $("[name=outputDate]").val();
+	var stockDate = $("[name=stockDate]").val();
 	var remark = $("[name=remark]").val();
+	var handlerName = $("[name=handlerName]").val();
+	var purchaseNumber = $("[name=purchaseNumber]").val();
 	$.ajax({
-		url : "http://localhost:8080/ERP/output/update",
+		url : "http://localhost:8080/ERP/goodsStock/updateGStock",
 		type : "post",
 		data : {
-			outputId : outputId,
-			sellId : sellId,
-			handerName : handlerName,
-			outputNumber : outputNumber,
+			gStockId : gStockId,
+			goodsName : goodsName,
+			purchaseId : purchaseId,
 			operator : operator,
-			outputDate : outputDate,
-			remark : remark
+			stockDate : stockDate,
+			remark : remark,
+			handlerName : handlerName,
+			purchaseNumber : purchaseNumber
 		},
 		success : function(result) {
 			if (result.status == 200) {
-				$('#addOutput').modal('hide');
+				$('#modal').modal('hide');
 				refush();
 			} else {
 				alert(result.message);
@@ -289,7 +279,7 @@ function delSelect() {
 	}
 	if (confirm("您确定要删除吗?")) {
 		$.ajax({
-			url : "http://localhost:8080/ERP/output/deleteMany",
+			url : "http://localhost:8080/ERP/goodsStock/deleteMany",
 			data : {
 				id_arr : id_arr
 			},
@@ -325,23 +315,22 @@ $(function() {
 	// 置空新增客户模态框
 	$("[name=add]").bind("click", function() {
 
-		$("h4").text("添加新出库单");
+		$("h4").text("添加新入库单");
 
-		$("[name=productName]").val("");
-		$("[name=outputNumber]").val("");
-		$("[name=outputDate]").val("");
-		$("[name=orderId]").val("");
-		$("[name=clientName]").val("");
-		$("[name=sellId]").val("");
+		$("[name=goodsName]").val("");
+		$("[name=purchaseNumber]").val("");
+		$("[name=stockDate]").val("");
+		$("[name=provider]").val("");
+		$("[name=purchaseId]").val("");
 		$("[name=stockNumber]").val("");
 		$("[name=handlerName]").val("");
 		$("[name=remark]").val("");
 		$.ajax({
-			url : "http://localhost:8080/ERP/output/generateOutputId",
+			url : "http://localhost:8080/ERP/goodsStock/getGStockId",
 			type : "get",
 			success : function(result) {
 				if (result.status == 200) {
-					$("[name=outputId]").val(result.object);
+					$("[name=gStockId]").val(result.object);
 				} else {
 					alert(result.message);
 				}
@@ -370,29 +359,29 @@ $(function() {
 			$(this).find(".input-help").remove();
 		})
 	})
-	$("[name=outputDate]").datetimepicker({
+	$("[name=stockDate]").datetimepicker({
 		format : 'YYYY-MM-DD hh:mm:ss',
 		locale : moment.locale('zh-cn')
 	});
-	$("[name=sellId]").bind("change", function() {
-		var sellId = $(this).val();
-		if (sellId == "") {
+	$("[name=purchaseId]").bind("change", function() {
+		var purchaseId = $(this).val();
+		if (purchaseId == "") {
 			return;
 		}
 		$.ajax({
-			url : "http://localhost:8080/ERP/output/getSellInfo",
+			url : "http://localhost:8080/ERP/goodsStock/getPurchaseInfo",
 			type : "get",
 			data : {
-				sellId : sellId
+				purchaseId : purchaseId
 			},
 			success : function(result) {
 				if (result.status == 200) {
-					var output = result.object;
-					$("[name=orderId]").val(output.orderId);
-					$("[name=productName]").val(output.productName);
-					$("[name=clientName]").val(output.customerName);
-					$("[name=stockNumber]").val(output.stockNumber);
-					$("[name=outputNumber]").val(output.sellNumber);
+					var purchase = result.object;
+					$("[name=purchaseNumber]").val(purchase.purchaseNumber);
+					$("[name=goodsName]").val(purchase.goodsName);
+					$("[name=provider]").val(purchase.provider);
+					$("[name=stockNumber]").val(purchase.stockNumber);
+					$("[name=handlerName]").val(purchase.handlerName);
 				} else {
 					alert(result.message);
 				}

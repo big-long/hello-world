@@ -72,18 +72,15 @@ function loadPage(result) {
 	for (var i = 0; i < data.length; i++) {
 		html += "<tr><td ><input type='checkbox' onchange='remove(this)' name='id[]'/>"
 				+ (i + 1 + result.pageSize * (result.pageNum - 1)) + "</td>";
-		html += "<td id='outputId' >" + data[i].outputId + "</td>";
-		html += "<td id='productName' >" + data[i].productName + "</td>";
-		html += "<td id='clientName' >" + data[i].clientName + "</td>";
-		html += "<td id='outputNumber' >" + data[i].outputNumber + "</td>";
-		html += "<td id='outputDate' >" + data[i].outputDate + "</td>";
-		html += "<td id='handlerName' >" + data[i].handerName + "</td>";
-		html += "<td ><div><button type='button' outputId='"
-				+ data[i].outputId
-				+ "' class='button border-main border-little icon-plus-square-o' data-toggle='modal' data-target='#addOutput'onclick='update(this)' >修改</button>";
+		html += "<td id='goodsName' >" + data[i].goodsName + "</td>";
+		html += "<td id='price' >" + data[i].price + "</td>";
+		html += "<td id='stockNumber' >" + data[i].stockNumber + "</td>";
+		html += "<td id='handlerName' >" + data[i].handlerName + "</td>";
+		html += "<td id='category' >" + data[i].category + "</td>";
+		html += "<td ><div><button type='button' class='button border-main border-little icon-plus-square-o' data-toggle='modal' data-target='#modal'onclick='update(this)' >修改</button>";
 		html += "<button type='button' class='button border-red button-little' onclick='del(this)'> <span class='icon-trash-o'></span> 删除 </button> </div></td> </tr>";
 	}
-	$("#outputList").html(html);
+	$("#list").html(html);
 	html = "";
 	html += "总共"
 			+ result.pages
@@ -209,7 +206,7 @@ function del(obj) {
 // 跳转到指定页面
 function gotoPage(pageNum, pageSize) {
 	$.ajax({
-		url : "http://localhost:8080/ERP/output/getPageInfo",
+		url : "http://localhost:8080/ERP/goodsStock/getPageInfo",
 		type : "get",
 		data : {
 			pageNum : pageNum,
@@ -392,7 +389,6 @@ $(function() {
 					$("[name=productName]").val(output.productName);
 					$("[name=clientName]").val(output.customerName);
 					$("[name=stockNumber]").val(output.stockNumber);
-					$("[name=outputNumber]").val(output.sellNumber);
 				} else {
 					alert(result.message);
 				}

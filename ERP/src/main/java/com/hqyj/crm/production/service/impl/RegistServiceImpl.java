@@ -81,4 +81,10 @@ public class RegistServiceImpl implements RegistService {
 		return new Result(500, "删除失败");
 	}
 
+	@Override
+	public List<Regist> queryAllRegist() {
+		return registMapper.selectAllRegists(null);
+	
+	}
+
 }

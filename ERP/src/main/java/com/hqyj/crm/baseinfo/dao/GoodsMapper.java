@@ -1,6 +1,7 @@
 package com.hqyj.crm.baseinfo.dao;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
@@ -23,6 +24,7 @@ public interface GoodsMapper {
 	
 	int deleteGoodsByPrimaryKey(Integer goodsId);
 	
+	
 	int deleteGoodsInfoByPrimaryKey(Integer goodsId);
 	
 	int deleteManyGoodsInfo(int[] id_arr);
@@ -36,6 +38,10 @@ public interface GoodsMapper {
 	int updateGoodsInfoByPrimaryKeySelective(Goods goods);
 	
 	int updateGoodsByPrimaryKeySelective(Goods goods);
-	
-	
+
+	int selectStockNumberByGoodsName(String goodsName);
+
+	int updateStockNumber(Map map);
+
+	Integer selectGoodsIdByGoodsName(String goodsName);
 }

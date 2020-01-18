@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hqyj.crm.common.entity.Result;
-import com.hqyj.crm.pSell.dao.SellMapper;
 import com.hqyj.crm.pSell.entity.Sell;
 import com.hqyj.crm.pSell.service.SellService;
 import com.hqyj.crm.pStock.entity.Output;

@@ -1,5 +1,6 @@
 package com.hqyj.crm.purchase.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.hqyj.crm.common.entity.Result;
@@ -20,5 +21,7 @@ public interface PurchaseService {
 	Map<String, Object> queryPurchaseData();
 
 	Result queryPageInfoByKeyWord(String keyWord, Integer pageNum, Integer pageSize);
+
+	List<Purchase> queryAllPurchase();
 
 }

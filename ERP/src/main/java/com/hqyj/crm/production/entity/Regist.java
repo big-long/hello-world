@@ -37,6 +37,8 @@ public class Regist {
 
     private String remark;
     
+    private Integer stockNumber;
+    
 
     public String getSize() {
 		return size;
@@ -134,4 +136,12 @@ public class Regist {
     public void setRemark(String remark) {
         this.remark = remark;
     }
+
+	public Integer getStockNumber() {
+		return stockNumber;
+	}
+
+	public void setStockNumber(Integer stockNumber) {
+		this.stockNumber = stockNumber;
+	}
 }

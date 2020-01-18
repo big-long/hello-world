@@ -86,4 +86,10 @@ public class PickListServiceImpl implements PickListService {
 		PageHelper.startPage(pageNum, pageSize);
 		return new Result(200,"success",new PageInfo<PickList>(pickLists));
 	}
+
+	@Override
+	public List<PickList> queryAllPickouts() {
+		return  pickListMapper.selectAllPickList();
+		
+	}
 }

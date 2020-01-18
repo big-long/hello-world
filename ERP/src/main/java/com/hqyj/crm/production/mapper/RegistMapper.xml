@@ -74,23 +74,24 @@
 	<select id="selectByPrimaryKey" parameterType="java.lang.String"
 		resultType="com.hqyj.crm.production.entity.Regist">
 		SELECT
-		p_regist.production_id AS production_id,
-		p_regist.product_name AS product_name,
-		p_regist.produce_number AS produce_number,
-		p_regist.produce_date AS produce_date,
-		p_regist.`status` AS `status`,
-		p_regist.storage_date AS storage_date,
-		p_regist.hander_name AS hander_name,
-		p_regist.operator AS operator,
-		p_regist.remark AS remark,
+		pr.production_id AS production_id,
+		pr.product_name AS product_name,
+		pr.produce_number AS produce_number,
+		pr.produce_date AS produce_date,
+		pr.`status` AS `status`,
+		pr.storage_date AS storage_date,
+		pr.hander_name AS hander_name,
+		pr.operator AS operator,
+		pr.remark AS remark,
 		product_info.producer AS producer,
 		product.size AS size,
-		product_info.price AS price
+		product_info.price AS price,
+		product_info.stock_number AS stock_number
 		FROM
-		p_regist
-		INNER JOIN product ON p_regist.product_name = product.product_name
+		p_regist pr
+		INNER JOIN product ON pr.product_name = product.product_name
 		INNER JOIN product_info ON product.product_id = product_info.product_id
-		where p_regist.production_id=#{productionId}
+		where pr.production_id=#{productionId}
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
 		delete from

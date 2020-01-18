@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hqyj.crm.pStock.dao.GStockMapper">
+
+	<sql id="Base_Column_List">
+		goods_name,price,stock_number,provider,category
+	</sql>
+	
+	<delete id="deleteGStockByPrimaryKey" parameterType="java.lang.String">
+	delete from g_stock where g_stock_id=#{gStockId}
+	</delete>
+	<select id="selectGStockInfo" parameterType="java.lang.String"
+		resultType="com.hqyj.crm.pStock.entity.GStock">
+		select gs.purchase_id AS purchase_id,pi.operator
+		AS handler_name,stock_number,gs.operator AS operator,gs.remark AS remark from
+		g_stock gs inner join purchase p on p.purchase_id=gs.purchase_id
+		inner join purchase_info pi on p.purchase_id=pi.purchase_id
+		inner join goods g on g.goods_name=p.goods_name
+		inner join goods_info
+		gi on g.goods_id=gi.goods_id
+		where gs.g_stock_id =#{gStockId}
+	</select>
+	<select id="selectPurchaseInfo" parameterType="java.lang.String"
+		resultType="com.hqyj.crm.pStock.entity.GStock">
+		select p.goods_name AS goods_name,pi.provider_name AS
+		provider,p.purchase_number AS purchase_number,pi.operator
+		AS handler_name,stock_number from
+		purchase p inner join purchase_info pi on p.purchase_id=pi.purchase_id
+		inner join goods g on g.goods_name=p.goods_name
+		inner join goods_info
+		gi on g.goods_id=gi.goods_id
+		where p.purchase_id =#{purchaseId}
+
+	</select>
+	<select id="selectAll"
+		resultType="com.hqyj.crm.pStock.entity.GStock">
+		select
+		gs.g_stock_id AS g_stock_id,p.goods_name AS
+		goods_name,pi.provider_name AS
+		provider,p.purchase_number AS
+		purchase_number,gs.stock_date AS
+		stock_date,gs.handler_name AS
+		handler_name
+		from g_stock gs inner join purchase p on
+		gs.purchase_id=p.purchase_id
+		inner join purchase_info pi on
+		gs.purchase_id=pi.purchase_id
+	</select>
+	<select id="selectGStock" parameterType="java.lang.String"
+		resultType="com.hqyj.crm.pStock.entity.GStock">
+		select g_stock_id,stock_date,purchase_id from g_stock where
+		g_stock_id=#{gStockId}
+	</select>
+	<insert id="insertGStockByGStock"
+		parameterType="com.hqyj.crm.pStock.entity.GStock">
+		insert into g_stock
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="gStockId != null and gStockId!=''">
+				g_stock_id,
+			</if>
+			<if test="stockDate != null">
+				stock_date,
+			</if>
+			<if test="purchaseId != null and purchaseId!=''">
+				purchase_id,
+			</if>
+			<if test="operator != null and operator!=''">
+				operator,
+			</if>
+			<if test="remark != null and remark!=''">
+				remark,
+			</if>
+			<if test="handlerName != null and handlerName!=''">
+				handler_name,
+			</if>
+		</trim>
+		values
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="gStockId != null">
+				#{gStockId,jdbcType=VARCHAR},
+			</if>
+			<if test="stockDate != null ">
+				#{stockDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="purchaseId != null and purchaseId!=''">
+				#{purchaseId,jdbcType=VARCHAR},
+			</if>
+			<if test="operator != null and operator!=''">
+				#{operator,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null and remark!=''">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="handlerName != null and handlerName!=''">
+				#{handlerName,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="updateGStockByGStock"
+		parameterType="com.hqyj.crm.pStock.entity.GStock">
+		update g_stock
+		<set>
+			<if test="stockDate!=null">
+				stock_date=#{stockDate}
+			</if>
+			<if test="purchaseId!=null">
+				purchase_id=#{purchaseId}
+			</if>
+			<if test="operator!=null">
+				operator=#{operator}
+			</if>
+			<if test="remark!=null">
+				remark=#{remark}
+			</if>
+			<if test="handlerName!=null">
+				handler_name=#{handlerName}
+			</if>
+		</set>
+		where g_stock_id=#{gStockId}
+	</update>
+</mapper>
